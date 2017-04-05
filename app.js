@@ -96,6 +96,7 @@ server.use(restifyValidation.validationPlugin({
 
 restifySwagger.swaggerPathPrefix = '/swagger/';
 restifySwagger.configure(server, {
+  basePath: 'https://' + server.address(),
   allowMethodInModelNames: true,
 });
 
