@@ -11,6 +11,19 @@ To find the current version of NodeJS installed on your system, run the followin
 $ node -v
 ```
 
+If you have the latest versions installed you need to get the dependencies loaded, run the following command in your preferred shell;
+
+```bash
+$ npm install
+```
+
+### Running the tests
+If you have all the Pre-requisites then you are ready to run the tests. Call the following from your shell;
+
+```bash
+$ npm test
+```
+
 ### Running the server
 If you have all the Pre-requisites then you are ready to run the service. Call the following from your shell;
 
