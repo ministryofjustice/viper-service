@@ -92,7 +92,7 @@ server.use(restifyValidation.validationPlugin({
   errorHandler: restify.errors.InvalidArgumentError
 }));
 
-restifySwagger.swaggerPathPrefix = '/api-docs/';
+restifySwagger.swaggerPathPrefix = '/swagger/';
 restifySwagger.configure(server, {
   allowMethodInModelNames: true,
 });

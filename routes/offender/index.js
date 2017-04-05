@@ -1,9 +1,11 @@
+const cache = {};
+
 const send = (res, next) => (body) => res.send(body) && next();
 
 const retrieveViperRating = (nomsId) =>
   new Promise((res) => res({
     nomsId: nomsId,
-    viperRating: Math.random().toFixed(2),
+    viperRating: cache[nomsId] = cache[nomsId] || Math.random().toFixed(2),
   }));
 
 module.exports = (server) =>
@@ -12,8 +14,55 @@ module.exports = (server) =>
       url: '/offender/:nomsId/viper',
 
       swagger: {
+        nickname: 'retrieveViperRating',
         summary: 'Retrieve VIPER Rating',
         docpath: 'offender',
+
+        responseClass: 'Result',
+
+        responseMessages: [
+          {
+            code: 200,
+            message: 'OK',
+            responseModel: 'Result',
+          },
+          {
+            code: 401,
+            message: 'Unauthorized; User or application must authenticate'
+          },
+          {
+            code: 403,
+            message: 'Forbidden; User not authorized to take this action'
+          },
+          {
+            code: 404,
+            message: 'Not Found; No rating for the given `id`'
+          },
+          {
+            code: 500,
+            message: 'Internal Server Error',
+          },
+          {
+            code: 409,
+            message: 'Invalid Argument',
+          },
+        ],
+      },
+
+      validation: {
+        resources: {
+          nomsId: { isRequired: true, regex: /[A-Z]\d{4}[A-Z]{2}/i, example: 'A1234BC' },
+        },
+      },
+
+      models: {
+        Result: {
+          id: 'Result',
+          properties: {
+              nomsId: { type: 'String' },
+              ViperRating: { type: 'Number' }
+          }
+        },
       },
     },
     (req, res, next) => retrieveViperRating(req.params.nomsId).then(send(res, next))
