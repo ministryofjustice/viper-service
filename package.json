@@ -12,16 +12,16 @@
   "main": "./app.js",
   "dependencies": {
     "crypto": "0.0.3",
-    "node-restify-swagger": "^0.1.8",
-    "node-restify-validation": "^1.1.1",
-    "restify": "^4.3.0",
-    "swagger-express-mw": "^0.7.0",
-    "swagger-ui": "^2.2.10"
+    "node-restify-swagger": "0.1.8",
+    "node-restify-validation": "1.1.1",
+    "restify": "4.3.0",
+    "swagger-express-mw": "0.7.0",
+    "swagger-ui": "2.2.10"
   },
   "devDependencies": {
-    "chai": "^3.5.0",
-    "mocha": "^3.2.0",
-    "supertest": "^3.0.0",
-    "swagger": "^0.7.5"
+    "chai": "3.5.0",
+    "mocha": "3.2.0",
+    "supertest": "3.0.0",
+    "swagger": "0.7.5"
   }
 }

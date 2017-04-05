@@ -16,6 +16,8 @@ const config = {
     summary: 'Retrieve VIPER Rating',
     docpath: 'offender',
 
+    schemes: [ 'https' ],
+
     responseClass: 'Result',
 
     responseMessages: [
