@@ -8,62 +8,61 @@ const retrieveViperRating = (nomsId) =>
     viperRating: cache[nomsId] = cache[nomsId] || Math.random().toFixed(2),
   }));
 
-module.exports = (server) =>
-  server.get(
-    {
-      url: '/offender/:nomsId/viper',
+const config = {
+  url: '/offender/:nomsId/viper',
 
-      swagger: {
-        nickname: 'retrieveViperRating',
-        summary: 'Retrieve VIPER Rating',
-        docpath: 'offender',
+  swagger: {
+    nickname: 'retrieveViperRating',
+    summary: 'Retrieve VIPER Rating',
+    docpath: 'offender',
 
-        responseClass: 'Result',
+    responseClass: 'Result',
 
-        responseMessages: [
-          {
-            code: 200,
-            message: 'OK',
-            responseModel: 'Result',
-          },
-          {
-            code: 401,
-            message: 'Unauthorized; User or application must authenticate'
-          },
-          {
-            code: 403,
-            message: 'Forbidden; User not authorized to take this action'
-          },
-          {
-            code: 404,
-            message: 'Not Found; No rating for the given `id`'
-          },
-          {
-            code: 500,
-            message: 'Internal Server Error',
-          },
-          {
-            code: 409,
-            message: 'Invalid Argument',
-          },
-        ],
+    responseMessages: [
+      {
+        code: 200,
+        message: 'OK',
+        responseModel: 'Result',
       },
-
-      validation: {
-        resources: {
-          nomsId: { isRequired: true, regex: /[A-Z]\d{4}[A-Z]{2}/i, example: 'A1234BC' },
-        },
+      {
+        code: 401,
+        message: 'Unauthorized; User or application must authenticate'
       },
-
-      models: {
-        Result: {
-          id: 'Result',
-          properties: {
-              nomsId: { type: 'String' },
-              ViperRating: { type: 'Number' }
-          }
-        },
+      {
+        code: 403,
+        message: 'Forbidden; User not authorized to take this action'
       },
+      {
+        code: 404,
+        message: 'Not Found; No rating for the given `id`'
+      },
+      {
+        code: 409,
+        message: 'Invalid Argument',
+      },
+      {
+        code: 500,
+        message: 'Internal Server Error',
+      },
+    ],
+  },
+
+  validation: {
+    resources: {
+      nomsId: { isRequired: true, regex: /[A-Z]\d{4}[A-Z]{2}/i },
     },
-    (req, res, next) => retrieveViperRating(req.params.nomsId).then(send(res, next))
-  );
+  },
+
+  models: {
+    Result: {
+      id: 'Result',
+      properties: {
+          nomsId: { type: 'String' },
+          ViperRating: { type: 'Number' }
+      }
+    },
+  },
+};
+
+module.exports = (server) =>
+  server.get(config, (req, res, next) => retrieveViperRating(req.params.nomsId).then(send(res, next)));

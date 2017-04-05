@@ -5,8 +5,10 @@ const pkg = require('./package.json');
 const debug = require('debug')(pkg.name);
 //var fs = require('fs');
 
+/*
 const redirectIfHtmlRequest = (url) => (req, res, next) =>
   res.redirect(url, next);
+*/
 
 const normalizePort = (val) => {
   var port = parseInt(val, 10);
@@ -114,3 +116,5 @@ server.on('listening',   onListening(server));
 restifySwagger.loadRestifyRoutes();
 
 server.listen(port);
+
+module.exports = server;

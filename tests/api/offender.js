@@ -6,12 +6,10 @@ describe('api', () => {
 
   describe('/offender', () => {
 
-      describe('GET /viper', () => {
+      describe('GET /:nomsId/viper', () => {
 
-        it('should return a valid result', (done) => {
+        it('should return a 200 response when the nomsId is valid', (done) => {
 
-          done();
-/*
           request(server)
             .get('/offender/A1234BC/viper')
             .set('Accept', 'application/json')
@@ -21,10 +19,29 @@ describe('api', () => {
               should.not.exist(err);
 
               res.body.should.have.property('nomsId', 'A1234BC');
+              res.body.should.have.property('viperRating');
 
               done();
             });
-    */
+
+        });
+
+        it('should return a 409 response when the nomsId is invalid', (done) => {
+
+          request(server)
+            .get('/offender/BANG/viper')
+            .set('Accept', 'application/json')
+            .expect('Content-Type', /json/)
+            .expect(409)
+            .end((err, res) => {
+              should.not.exist(err);
+
+              res.body.should.have.property('code', 'InvalidArgument');
+              res.body.should.have.property('message', 'nomsId (INVALID): Invalid characters');
+
+              done();
+            });
+
         });
 
       });
