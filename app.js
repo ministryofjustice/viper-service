@@ -95,10 +95,14 @@ server.use(restifyValidation.validationPlugin({
 }));
 
 restifySwagger.swaggerPathPrefix = '/swagger/';
-restifySwagger.configure(server, {
-  basePath: 'https://' + server.address(),
+var swaggerConfig = {
   allowMethodInModelNames: true,
-});
+};
+
+if (debug) {
+  swaggerConfig.basePath = 'https://viper-service.herokuapp.com';
+}
+restifySwagger.configure(server, swaggerConfig);
 
 require('./routes/offender')(server, '/offender');
 require('./routes/ping')(server, '/ping');
