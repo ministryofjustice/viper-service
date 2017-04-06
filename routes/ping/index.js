@@ -13,8 +13,7 @@ module.exports = (server) =>
     (req, res, next) => (res.send({
       version_number: pkg.version,
       build_date: '20150721',
-      commit_id: process.env.npm_package_gitHead,
+      commit_id: 'shdbvkjh',
       build_tag: 'test',
-      env: process.env,
     })) && next()
   );
