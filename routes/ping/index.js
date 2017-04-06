@@ -1,4 +1,7 @@
 const pkg = require('../../package.json');
+const getRepoInfo = require('git-repo-info');
+
+const repoInfo = getRepoInfo();
 
 module.exports = (server) =>
   server.get(
@@ -12,8 +15,8 @@ module.exports = (server) =>
     },
     (req, res, next) => (res.send({
       version_number: pkg.version,
-      build_date: '20150721',
-      commit_id: 'shdbvkjh',
-      build_tag: 'test',
+      build_date: new Date(repoInfo.committerDate),
+      commit_id: repoInfo.abbreviatedSha,
+      build_tag: repoInfo.tag || repoInfo.branch,
     })) && next()
   );
