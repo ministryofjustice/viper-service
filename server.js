@@ -2,56 +2,6 @@ const restify = require('restify');
 const restifySwagger = require('node-restify-swagger');
 const restifyValidation = require('node-restify-validation');
 const pkg = require('./package.json');
-const debug = require('debug')(pkg.name);
-//var fs = require('fs');
-
-/*
-const redirectIfHtmlRequest = (url) => (req, res, next) =>
-  res.redirect(url, next);
-*/
-
-const normalizePort = (val) => {
-  var port = parseInt(val, 10);
-
-  if (isNaN(port)) {
-    return val;
-  }
-
-  return port >= 0 ? port : false;
-};
-
-const onError = (port) => (req, res, error) => {
-  if (error.syscall !== 'listen') {
-    throw error;
-  }
-
-  var bind = typeof port === 'string' ? 'Pipe ' + port : 'Port ' + port;
-
-  // handle specific listen errors with friendly messages
-  switch (error.code) {
-    case 'EACCES':
-      console.error(bind + ' requires elevated privileges');
-      process.exit(1);
-    break;
-
-    case 'EADDRINUSE':
-      console.error(bind + ' is already in use');
-      process.exit(1);
-    break;
-
-    default:
-      throw error;
-  }
-};
-
-const onListening = (server) => () => {
-  var addr = server.address();
-
-  var bind = typeof addr === 'string' ? 'pipe ' + addr : 'port ' + addr.port;
-
-  debug('Server listening on ' + bind);
-  console.log('Server listening on ' + bind);
-};
 
 const server = restify.createServer({
   //certificate: fs.readFileSync('path/to/server/certificate'),
@@ -91,18 +41,14 @@ server.use(restifyValidation.validationPlugin({
   errorsAsArray: false,
   // Not exclude incoming variables not specified in validator rules
   forbidUndefinedVariables: false,
-  errorHandler: restify.errors.InvalidArgumentError
+  errorHandler: restify.errors.InvalidArgumentError,
 }));
 
 restifySwagger.swaggerPathPrefix = '/swagger/';
-var swaggerConfig = {
+restifySwagger.configure(server, {
   allowMethodInModelNames: true,
-};
-
-if (debug) {
-  swaggerConfig.basePath = 'https://viper-service.herokuapp.com';
-}
-restifySwagger.configure(server, swaggerConfig);
+  basePath: 'https://viper-service.herokuapp.com', // server.url ?
+});
 
 require('./routes/offender')(server, '/offender');
 require('./routes/ping')(server, '/ping');
@@ -113,13 +59,6 @@ server.get(/^\/dist\/?.*/, restify.serveStatic({
   default: 'index.html',
 }));
 
-// environment variables
-var port = normalizePort(process.env.PORT || '3030');
-server.on('InternalServer',    onError(port));
-server.on('listening',   onListening(server));
-
 restifySwagger.loadRestifyRoutes();
-
-server.listen(port);
 
 module.exports = server;

@@ -1,6 +1,6 @@
 const should = require('chai').should();
 const request = require('supertest');
-const server = require('../../app.js');
+const server = require('../../server.js');
 
 describe('api', () => {
 
