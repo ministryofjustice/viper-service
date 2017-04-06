@@ -7,7 +7,7 @@
   "license": "GPL-3.0",
   "scripts": {
     "start": "./bin/www",
-    "test": "./node_modules/mocha/bin/mocha ./tests/**/**.*"
+    "test": "./node_modules/mocha/bin/mocha ./tests/**/**.js ./tests/**.js"
   },
   "main": "./bin/www",
   "dependencies": {
