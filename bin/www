@@ -55,13 +55,10 @@ const logger = new Logger({
   streams: [
     {
       stream: process.stdout,
-      level: 'debug'
-    },
-    {
-      stream: process.stdout,
-      level: 'info'
+      level: 'debug',
     }
   ],
+  serializers: restify.bunyan.serializers,
 });
 
 const server = app(process.env, logger);
