@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 var pkg = require('../package.json');
-var server = require('../server');
+var app = require('../app');
 var debug = require('debug')(pkg.name + ':server');
 //var http = require('http');
 
@@ -53,6 +53,7 @@ const onListening = (server) => () => {
 var port = normalizePort(process.env.PORT || '3000');
 
 // start server
+server = app(process.env);
 server.listen(port);
 server.on('InternalServer',    onError(port));
 server.on('listening',   onListening(server));

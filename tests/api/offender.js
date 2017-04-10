@@ -1,8 +1,9 @@
 const should = require('chai').should();
 const request = require('supertest');
-const server = require('../../server.js');
+const app = require('../../app.js');
 
 describe('api', () => {
+  var server = app();
 
   describe('/offender', () => {
 

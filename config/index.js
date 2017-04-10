@@ -1,3 +1,3 @@
-module.exports = function(app, config) {
+module.exports = (app) => {
   require('./environments/' + app.get('env'))(app.locals.config);
-}
+};
