@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 
-var pkg = require('../package.json');
-var app = require('../app');
-var debug = require('debug')(pkg.name + ':server');
-//var http = require('http');
+const restify = require('restify');
+const pkg = require('../package.json');
+const Logger = require('bunyan');
+const app = require('../app');
 
 const normalizePort = (val) => {
   var port = parseInt(val, 10);
@@ -15,7 +15,7 @@ const normalizePort = (val) => {
   return port >= 0 ? port : false;
 };
 
-const onError = (port) => (req, res, error) => {
+const onError = (port, logger) => (req, res, error) => {
   if (error.syscall !== 'listen') {
     throw error;
   }
@@ -25,35 +25,49 @@ const onError = (port) => (req, res, error) => {
   // handle specific listen errors with friendly messages
   switch (error.code) {
     case 'EACCES':
-      console.error(bind + ' requires elevated privileges');
+      logger.error(bind + ' requires elevated privileges');
       process.exit(1);
     break;
 
     case 'EADDRINUSE':
-      console.error(bind + ' is already in use');
+      logger.error(bind + ' is already in use');
       process.exit(1);
     break;
 
     default:
-      console.error(error);
       throw error;
   }
 };
 
-const onListening = (server) => () => {
+const onListening = (server, logger) => () => {
   var addr = server.address();
 
   var bind = typeof addr === 'string' ? 'pipe ' + addr : 'port ' + addr.port;
 
-  debug('Debugger listening on ' + bind);
-  console.log('Server listening on ' + bind);
+  logger.info('Server listening on ' + bind);
 };
 
 // environment variables
-var port = normalizePort(process.env.PORT || '3000');
+const port = normalizePort(process.env.PORT || '3000');
+
+const logger = new Logger({
+  name: pkg.name + ':server',
+  streams: [
+    {
+      stream: process.stdout,
+      level: 'debug'
+    },
+    {
+      stream: process.stdout,
+      level: 'info'
+    }
+  ],
+});
+
+const server = app(process.env, logger);
 
 // start server
-server = app(process.env);
 server.listen(port);
-server.on('InternalServer',    onError(port));
-server.on('listening',   onListening(server));
+server.on('InternalServer',    onError(port, logger));
+server.on('listening',   onListening(server, logger));
+server.on('after', restify.auditLogger({ log:logger }));

@@ -5,7 +5,7 @@ const getRepoInfo = require('git-repo-info');
 
 const pkg = require('./package.json');
 
-module.exports = (env) => {
+module.exports = (env, logger) => {
   var config = {
     pkg: pkg,
     env: env,
@@ -18,6 +18,7 @@ module.exports = (env) => {
     name: config.pkg.name,
     //spdy: {},
     version: config.pkg.version,
+    log: logger,
   });
 
   server.config = config;

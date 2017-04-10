@@ -11,8 +11,9 @@
   },
   "main": "./bin/www",
   "dependencies": {
+    "bunyan": "1.8.10",
     "crypto": "0.0.3",
-    "git-repo-info": "^1.4.1",
+    "git-repo-info": "1.4.1",
     "node-restify-swagger": "0.1.8",
     "node-restify-validation": "1.1.1",
     "restify": "4.3.0",
