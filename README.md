@@ -31,5 +31,12 @@ If you have all the Pre-requisites then you are ready to run the service. Call t
 $ npm start
 ```
 
+### Running the server with formatted logs
+If you wish to have the output printed nicely to the console simply pipe the output to the local Bunyan cli tool. Call the following from your shell;
+
+```bash
+$ npm start | ./node_modules/.bin/bunyan -o short
+```
+
 ## Swagger documentation
 The swagger documentation can be found on the path ```/dist/?url=/swagger/resources.json```
