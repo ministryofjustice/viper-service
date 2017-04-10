@@ -1,8 +1,3 @@
-const pkg = require('../../package.json');
-const getRepoInfo = require('git-repo-info');
-
-const repoInfo = getRepoInfo();
-
 module.exports = (server) =>
   server.get(
     {
@@ -13,10 +8,11 @@ module.exports = (server) =>
         docpath: 'ping',
       },
     },
-    (req, res, next) => (res.send({
-      version_number: pkg.version,
-      build_date: new Date(repoInfo.committerDate),
-      commit_id: repoInfo.abbreviatedSha,
-      build_tag: repoInfo.tag || repoInfo.branch,
-    })) && next()
+    (req, res, next) =>
+      res.send({
+        'version_number': server.config.env.VERSION_NUMBER || server.config.pkg.version,
+        'build_date': new Date(server.config.env.BUILD_DATE || server.config.repoInfo.committerDate),
+        'commit_id': server.config.env.COMMIT_ID || server.config.repoInfo.abbreviatedSha,
+        'build_tag': server.config.env.BUILD_TAG || server.config.repoInfo.tag || server.config.repoInfo.branch,
+      }) && next()
   );

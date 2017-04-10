@@ -35,6 +35,7 @@ const onError = (port) => (req, res, error) => {
     break;
 
     default:
+      console.error(error);
       throw error;
   }
 };

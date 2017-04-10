@@ -1,7 +1,15 @@
 const restify = require('restify');
 const restifySwagger = require('node-restify-swagger');
 const restifyValidation = require('node-restify-validation');
+const getRepoInfo = require('git-repo-info');
+
 const pkg = require('./package.json');
+
+var config = {
+  pkg: pkg,
+  env: process.env,
+  repoInfo: getRepoInfo(),
+};
 
 const server = restify.createServer({
   //certificate: fs.readFileSync('path/to/server/certificate'),
@@ -10,6 +18,8 @@ const server = restify.createServer({
   //spdy: {},
   version: pkg.version,
 });
+
+server.config = config;
 
 server.use(restify.acceptParser(server.acceptable));
 //server.use(restify.authorizationParser());
@@ -50,9 +60,9 @@ restifySwagger.configure(server, {
   basePath: 'https://viper-service.herokuapp.com', // server.url ?
 });
 
-require('./routes/offender')(server, '/offender');
-require('./routes/ping')(server, '/ping');
-require('./routes/healthcheck')(server, '/healthcheck');
+require('./routes/offender')(server);
+require('./routes/ping')(server);
+require('./routes/healthcheck')(server);
 
 server.get(/^\/dist\/?.*/, restify.serveStatic({
   directory: './node_modules/swagger-ui',
