@@ -1,12 +1,10 @@
 const cache = {};
 
-const send = (res, next) => (body) => res.send(body) && next();
-
 const retrieveViperRating = (nomsId) =>
-  new Promise((res) => res({
+  ({
     nomsId: nomsId,
     viperRating: cache[nomsId] = cache[nomsId] || Math.random().toFixed(2),
-  }));
+  });
 
 const config = {
   url: '/offender/:nomsId/viper',
@@ -67,4 +65,7 @@ const config = {
 };
 
 module.exports = (server) =>
-  server.get(config, (req, res, next) => retrieveViperRating(req.params.nomsId).then(send(res, next)));
+  server.get(config, (req, res, next) => {
+    res.send(retrieveViperRating(req.params.nomsId));
+    next();
+  });

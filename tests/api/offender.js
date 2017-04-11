@@ -3,7 +3,7 @@ const request = require('supertest');
 const app = require('../../app.js');
 
 describe('api', () => {
-  var server = app();
+  var server = app({});
 
   describe('/offender', () => {
 

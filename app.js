@@ -1,7 +1,6 @@
 const restify = require('restify');
 const restifySwagger = require('node-restify-swagger');
 const restifyValidation = require('node-restify-validation');
-const getRepoInfo = require('git-repo-info');
 
 const pkg = require('./package.json');
 
@@ -9,19 +8,25 @@ module.exports = (env, logger) => {
   var config = {
     pkg: pkg,
     env: env,
-    repoInfo: getRepoInfo(),
   };
 
-  const server = restify.createServer({
+  var options = {
     //certificate: fs.readFileSync('path/to/server/certificate'),
     //key: fs.readFileSync('path/to/server/key'),
     name: config.pkg.name,
     //spdy: {},
     version: config.pkg.version,
-    log: logger,
-  });
+  };
+
+  if (logger) {
+    options.log = logger;
+  }
+
+  var server = restify.createServer(options);
 
   server.config = config;
+
+  server.dbConn = config.env.VIPER_API_DATABASE;
 
   server.use(restify.acceptParser(server.acceptable));
   //server.use(restify.authorizationParser());
@@ -56,15 +61,14 @@ module.exports = (env, logger) => {
     errorHandler: restify.errors.InvalidArgumentError,
   }));
 
+  require('./routes/heartbeat')(server);
+  require('./routes/offender')(server);
+
   restifySwagger.swaggerPathPrefix = '/swagger/';
   restifySwagger.configure(server, {
     allowMethodInModelNames: true,
-    basePath: 'https://viper-service.herokuapp.com', // server.url ?
+    basePath: '/',
   });
-
-  require('./routes/offender')(server);
-  require('./routes/ping')(server);
-  require('./routes/healthcheck')(server);
 
   server.get(/^\/dist\/?.*/, restify.serveStatic({
     directory: './node_modules/swagger-ui',
