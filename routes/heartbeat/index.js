@@ -1,5 +1,3 @@
-const MongoClient = require('mongodb').MongoClient;
-
 const NOT_AVAILABLE = 'Not Available';
 
 const getBuildDate = (config) => {
@@ -7,19 +5,6 @@ const getBuildDate = (config) => {
 
   return (!isNaN(d.getTime())) ? d.toString() : NOT_AVAILABLE;
 };
-
-var dbConn;
-const dbSetupMiddleware = (server) =>
-  server.use((req, res, next) =>
-    dbConn || !server.dbConn ? next() : MongoClient.connect(server.dbConn, (err, db) => {
-      if (err) {
-        return next(err);
-      }
-
-      dbConn = db;
-
-      next();
-    }));
 
 const healthchecksEndpoint = (server) =>
   server.get(
@@ -34,12 +19,12 @@ const healthchecksEndpoint = (server) =>
     (req, res, next) => {
       var status = { checks: { database: false } };
 
-      if (!dbConn) {
+      if (!server.db) {
         res.send(502, status);
         return next();
       }
 
-      dbConn.admin().serverStatus((err, info) => {
+      server.db.admin().serverStatus((err, info) => {
         if (err) {
           return next(err);
         }
@@ -74,6 +59,5 @@ const pingEndpoint = (server) =>
     });
 
 module.exports = (server) =>
-  dbSetupMiddleware(server) &&
   healthchecksEndpoint(server) &&
   pingEndpoint(server);

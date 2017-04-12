@@ -1,6 +1,7 @@
 const restify = require('restify');
 const restifySwagger = require('node-restify-swagger');
 const restifyValidation = require('node-restify-validation');
+const MongoClient = require('mongodb').MongoClient;
 
 const pkg = require('./package.json');
 
@@ -26,7 +27,16 @@ module.exports = (env, logger) => {
 
   server.config = config;
 
-  server.dbConn = config.env.VIPER_API_DATABASE;
+  server.use((req, res, next) =>
+    server.db || !config.env.VIPER_API_DATABASE ? next() : MongoClient.connect(config.env.VIPER_API_DATABASE, (err, db) => {
+      if (err) {
+        return next(err);
+      }
+
+      server.db = db;
+
+      next();
+    }));
 
   server.use(restify.acceptParser(server.acceptable));
   //server.use(restify.authorizationParser());
