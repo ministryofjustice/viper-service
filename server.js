@@ -40,9 +40,7 @@ const onError = (port, logger) => (req, res, error) => {
 const onListening = (server, logger) => () => {
   var addr = server.address();
 
-  var bind = typeof addr === 'string' ? 'pipe ' + addr : 'port ' + addr.port;
-
-  logger.info('Server listening on ' + bind);
+  logger.info({addr}, 'Server listening');
 };
 
 // environment variables
@@ -58,6 +56,13 @@ const logger = new Logger({
   ],
   serializers: restify.bunyan.serializers,
 });
+
+process.on('uncaughtException', logAndAbort);
+process.on('unhandledRejection', logAndAbort);
+function logAndAbort(err) {
+  logger.error(err, 'Unhandled error');
+  process.exit(1);
+}
 
 const server = app(process.env, logger);
 

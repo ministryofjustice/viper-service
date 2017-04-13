@@ -31,11 +31,11 @@ If you have all the Pre-requisites then you are ready to run the service. Call t
 $ npm start
 ```
 
-### Running the server with formatted logs
-If you wish to have the output printed nicely to the console simply pipe the output to the local Bunyan cli tool. Call the following from your shell;
+### Running the server with raw logs
+If you wish to have the output in raw JSON, then you can run the server without piping it through bunyan's formatter. Call the following from your shell;
 
 ```bash
-$ npm start | ./node_modules/.bin/bunyan -o short
+$ node server.js
 ```
 
 ## Swagger documentation

@@ -10,7 +10,7 @@
     "node": "6.10.0"
   },
   "scripts": {
-    "start": "node server.js",
+    "start": "node server.js | ./node_modules/.bin/bunyan -o short",
     "test": "mocha ./tests/**/**.js ./tests/**.js",
     "ci-test": "mocha ./tests/**/**.js ./tests/**.js --reporter mocha-junit-reporter"
   },
