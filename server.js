@@ -1,9 +1,7 @@
-#!/usr/bin/env node
-
 const restify = require('restify');
-const pkg = require('../package.json');
+const pkg = require('./package.json');
 const Logger = require('bunyan');
-const app = require('../app');
+const app = require('./app');
 
 const normalizePort = (val) => {
   var port = parseInt(val, 10);

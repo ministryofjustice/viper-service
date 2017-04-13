@@ -5,12 +5,15 @@
   "private": true,
   "author": "Matt Smith <mattonfoot@gmail.com> (http://about.me/mattonfoot)",
   "license": "GPL-3.0",
-  "scripts": {
-    "start": "./bin/www",
-    "test": "./node_modules/mocha/bin/mocha ./tests/**/**.js ./tests/**.js",
-    "ci-test": "./node_modules/mocha/bin/mocha ./tests/**/**.js ./tests/**.js --reporter mocha-junit-reporter"
+  "engines": {
+    "npm": "3.10.10",
+    "node": "6.10.2"
   },
-  "main": "./bin/www",
+  "scripts": {
+    "start": "node server.js",
+    "test": "mocha ./tests/**/**.js ./tests/**.js",
+    "ci-test": "mocha ./tests/**/**.js ./tests/**.js --reporter mocha-junit-reporter"
+  },
   "dependencies": {
     "bunyan": "1.8.10",
     "crypto": "0.0.3",
