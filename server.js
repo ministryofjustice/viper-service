@@ -1,5 +1,4 @@
 const restify = require('restify');
-const pkg = require('./package.json');
 const Logger = require('bunyan');
 const app = require('./app');
 
@@ -13,22 +12,18 @@ const normalizePort = (val) => {
   return port >= 0 ? port : false;
 };
 
-const onError = (port, logger) => (req, res, error) => {
-  if (error.syscall !== 'listen') {
-    throw error;
-  }
-
-  var bind = typeof port === 'string' ? 'Pipe ' + port : 'Port ' + port;
+const onProcessError = (config) => (error) => {
+  var bind = typeof config.port === 'string' ? 'Pipe ' + config.port : 'Port ' + config.port;
 
   // handle specific listen errors with friendly messages
   switch (error.code) {
     case 'EACCES':
-      logger.error(bind + ' requires elevated privileges');
+      config.log.error(bind + ' requires elevated privileges');
       process.exit(1);
     break;
 
     case 'EADDRINUSE':
-      logger.error(bind + ' is already in use');
+      config.log.error(bind + ' is already in use');
       process.exit(1);
     break;
 
@@ -37,17 +32,22 @@ const onError = (port, logger) => (req, res, error) => {
   }
 };
 
-const onListening = (server, logger) => () => {
+const onServerListening = (server, config) => () => {
   var addr = server.address();
 
-  logger.info({addr}, 'Server listening');
+  config.log.info({addr}, 'Server listening');
 };
 
 // environment variables
-const port = normalizePort(process.env.PORT || '3000');
 
-const logger = new Logger({
-  name: pkg.name + ':server',
+var config = {
+  pkg: require('./package.json'),
+  env: process.env,
+  port: normalizePort(process.env.PORT || '3000'),
+};
+
+config.log = new Logger({
+  name: config.pkg.name + ':server',
   streams: [
     {
       stream: process.stdout,
@@ -57,17 +57,12 @@ const logger = new Logger({
   serializers: restify.bunyan.serializers,
 });
 
-process.on('uncaughtException', logAndAbort);
-process.on('unhandledRejection', logAndAbort);
-function logAndAbort(err) {
-  logger.error(err, 'Unhandled error');
-  process.exit(1);
-}
+process.on('uncaughtException', onProcessError(config));
+process.on('unhandledRejection', onProcessError(config));
 
-const server = app(process.env, logger);
+const server = app(config);
 
 // start server
-server.listen(port);
-server.on('InternalServer',    onError(port, logger));
-server.on('listening',   onListening(server, logger));
-server.on('after', restify.auditLogger({ log:logger }));
+server.listen(config.port);
+server.on('listening', onServerListening(server, config));
+server.on('after', restify.auditLogger(config));

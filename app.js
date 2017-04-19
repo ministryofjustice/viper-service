@@ -3,13 +3,7 @@ const restifySwagger = require('node-restify-swagger');
 const restifyValidation = require('node-restify-validation');
 const MongoClient = require('mongodb').MongoClient;
 
-const pkg = require('./package.json');
-
-module.exports = (env, logger) => {
-  var config = {
-    pkg: pkg,
-    env: env,
-  };
+module.exports = (config) => {
 
   var options = {
     //certificate: fs.readFileSync('path/to/server/certificate'),
@@ -19,8 +13,8 @@ module.exports = (env, logger) => {
     version: config.pkg.version,
   };
 
-  if (logger) {
-    options.log = logger;
+  if (config.logger) {
+    options.log = config.logger;
   }
 
   var server = restify.createServer(options);
@@ -28,7 +22,7 @@ module.exports = (env, logger) => {
   server.config = config;
 
   server.use((req, res, next) =>
-    server.db || !config.env.VIPER_API_DATABASE ? next() : MongoClient.connect(config.env.VIPER_API_DATABASE, (err, db) => {
+    server.db || !config.env.DB_CONN ? next() : MongoClient.connect(config.env.DB_CONN, (err, db) => {
       if (err) {
         return next(err);
       }
@@ -74,16 +68,16 @@ module.exports = (env, logger) => {
   require('./routes/heartbeat')(server);
   require('./routes/offender')(server);
 
+  server.get(/^\/dist\/?.*/, restify.serveStatic({
+    directory: './node_modules/swagger-ui',
+    default: 'index.html',
+  }));
+
   restifySwagger.swaggerPathPrefix = '/swagger/';
   restifySwagger.configure(server, {
     allowMethodInModelNames: true,
     basePath: '/',
   });
-
-  server.get(/^\/dist\/?.*/, restify.serveStatic({
-    directory: './node_modules/swagger-ui',
-    default: 'index.html',
-  }));
 
   restifySwagger.loadRestifyRoutes();
 
