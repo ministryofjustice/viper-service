@@ -8,21 +8,20 @@ module.exports = (config) => {
   var options = {
     //certificate: fs.readFileSync('path/to/server/certificate'),
     //key: fs.readFileSync('path/to/server/key'),
-    name: config.pkg.name,
+    name: config.name,
     //spdy: {},
-    version: config.pkg.version,
+    version: config.version,
   };
 
-  if (config.logger) {
-    options.log = config.logger;
+  if (config.log) {
+    options.log = config.log;
   }
 
   var server = restify.createServer(options);
-
   server.config = config;
 
   server.use((req, res, next) =>
-    server.db || !config.env.DB_CONN ? next() : MongoClient.connect(config.env.DB_CONN, (err, db) => {
+    server.db || !config.dbConn ? next() : MongoClient.connect(config.dbConn, (err, db) => {
       if (err) {
         return next(err);
       }

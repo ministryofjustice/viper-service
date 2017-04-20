@@ -1,7 +1,7 @@
 const NOT_AVAILABLE = 'Not Available';
 
 const getBuildDate = (config) => {
-  var d = new Date(config.env.BUILD_DATE);
+  var d = new Date(config.buildDate);
 
   return (!isNaN(d.getTime())) ? d.toString() : NOT_AVAILABLE;
 };
@@ -49,10 +49,10 @@ const pingEndpoint = (server) =>
     },
     (req, res, next) => {
       res.send({
-        'version_number': server.config.env.VERSION_NUMBER || NOT_AVAILABLE,
+        'version_number': server.config.version || NOT_AVAILABLE,
         'build_date': getBuildDate(server.config),
-        'commit_id': server.config.env.COMMIT_ID || NOT_AVAILABLE,
-        'build_tag': server.config.env.BUILD_TAG || NOT_AVAILABLE,
+        'commit_id': server.config.commitId || NOT_AVAILABLE,
+        'build_tag': server.config.buildTag || NOT_AVAILABLE,
       });
 
       return next();
