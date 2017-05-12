@@ -2,7 +2,7 @@
 <p>FORMAT: 1A
 HOST: <a href="http://viper-dev.hmpps.dsd.io">http://viper-dev.hmpps.dsd.io</a></p>
 </div><div class="middle"><section id="viper-score" class="resource-group"><h2 class="group-heading">VIPER Score <a href="#viper-score" class="permalink">&para;</a></h2><p>Retrieve a previously determined VIPER Score for a known offender</p>
-</section></div><div class="middle"><div id="viper-score-retrieve-viper-score" class="resource"><h3 class="resource-heading">Retrieve VIPER Score <a href="#viper-score-retrieve-viper-score" class="permalink">&para;</a></h3></div></div><div class="right"><div class="definition"><span class="method get">GET</span>&nbsp;<span class="uri"><span class="hostname">http://viper-dev.hmpps.dsd.io</span>/offender/<span class="hljs-attribute" title="nomsId">A1234BC</span>/viper</span></div><div class="tabs"><div class="example-names"><span>Requests</span><span class="tab-button">with known nomsId</span><span class="tab-button">with unknown nomsId</span><span class="tab-button">with invalid nomsId</span><span class="tab-button">by unauthenticated user</span><span class="tab-button">is unauthorised</span><span class="tab-button">caused server error</span></div><div class="tab"><div><div class="inner"><h5>Headers</h5><pre><code><span class="hljs-attribute">Content-Type</span>: <span class="hljs-string">application/json</span></code></pre><div style="height: 1px;"></div></div></div><div class="tabs"><div class="example-names"><span>Responses</span><span class="tab-button">200</span></div><div class="tab"><div><div class="inner"><h5>Headers</h5><pre><code><span class="hljs-attribute">Content-Type</span>: <span class="hljs-string">application/json</span></code></pre><div style="height: 1px;"></div><h5>Body</h5><pre><code>{
+</section></div><div class="middle"><div id="viper-score-retrieve-viper-score" class="resource"><h3 class="resource-heading">Retrieve VIPER Score <a href="#viper-score-retrieve-viper-score" class="permalink">&para;</a></h3></div></div><div class="right"><div class="definition"><span class="method get">GET</span>&nbsp;<span class="uri"><span class="hostname">http://viper-dev.hmpps.dsd.io</span>/offender/<span class="hljs-attribute" title="nomsId">A1234BC</span>/viper</span></div><div class="tabs"><div class="example-names"><span>Requests</span><span class="tab-button">Known nomsId</span><span class="tab-button">Unknown nomsId</span><span class="tab-button">Invalid nomsId</span></div><div class="tab"><div><div class="inner"><h5>Headers</h5><pre><code><span class="hljs-attribute">Content-Type</span>: <span class="hljs-string">application/json</span></code></pre><div style="height: 1px;"></div></div></div><div class="tabs"><div class="example-names"><span>Responses</span><span class="tab-button">200</span></div><div class="tab"><div><div class="inner"><h5>Headers</h5><pre><code><span class="hljs-attribute">Content-Type</span>: <span class="hljs-string">application/json</span></code></pre><div style="height: 1px;"></div><h5>Body</h5><pre><code>{
   "<span class="hljs-attribute">nomsId</span>": <span class="hljs-value"><span class="hljs-string">"A1234BC"</span></span>,
   "<span class="hljs-attribute">viperRating</span>": <span class="hljs-value"><span class="hljs-number">0.56</span>
 </span>}</code></pre><div style="height: 1px;"></div><h5>Schema</h5><pre><code>{
@@ -23,7 +23,7 @@ HOST: <a href="http://viper-dev.hmpps.dsd.io">http://viper-dev.hmpps.dsd.io</a><
   </span>}
 </span>}</code></pre><div style="height: 1px;"></div></div></div></div></div></div><div class="tab"><div><div class="inner"><h5>Headers</h5><pre><code><span class="hljs-attribute">Content-Type</span>: <span class="hljs-string">application/json</span></code></pre><div style="height: 1px;"></div></div></div><div class="tabs"><div class="example-names"><span>Responses</span><span class="tab-button">404</span></div><div class="tab"><div><div class="inner"><div class="description"><p>Not Found</p>
 </div><h5>Headers</h5><pre><code><span class="hljs-attribute">Content-Type</span>: <span class="hljs-string">application/json</span></code></pre><div style="height: 1px;"></div><h5>Body</h5><pre><code>{
-  "<span class="hljs-attribute">code</span>": <span class="hljs-value"><span class="hljs-string">"404"</span></span>,
+  "<span class="hljs-attribute">code</span>": <span class="hljs-value"><span class="hljs-string">"ResourceNotFound"</span></span>,
   "<span class="hljs-attribute">message</span>": <span class="hljs-value"><span class="hljs-string">"/offender/C4321BA/viper does not exist"</span>
 </span>}</code></pre><div style="height: 1px;"></div><h5>Schema</h5><pre><code>{
   "<span class="hljs-attribute">required</span>": <span class="hljs-value">[
@@ -32,7 +32,7 @@ HOST: <a href="http://viper-dev.hmpps.dsd.io">http://viper-dev.hmpps.dsd.io</a><
   ]</span>,
   "<span class="hljs-attribute">properties</span>": <span class="hljs-value">{
     "<span class="hljs-attribute">code</span>": <span class="hljs-value">{
-      "<span class="hljs-attribute">type</span>": <span class="hljs-value"><span class="hljs-string">"number"</span>
+      "<span class="hljs-attribute">type</span>": <span class="hljs-value"><span class="hljs-string">"string"</span>
     </span>}</span>,
     "<span class="hljs-attribute">message</span>": <span class="hljs-value">{
       "<span class="hljs-attribute">type</span>": <span class="hljs-value"><span class="hljs-string">"string"</span>
@@ -40,7 +40,7 @@ HOST: <a href="http://viper-dev.hmpps.dsd.io">http://viper-dev.hmpps.dsd.io</a><
   </span>}
 </span>}</code></pre><div style="height: 1px;"></div></div></div></div></div></div><div class="tab"><div><div class="inner"><h5>Headers</h5><pre><code><span class="hljs-attribute">Content-Type</span>: <span class="hljs-string">application/json</span></code></pre><div style="height: 1px;"></div></div></div><div class="tabs"><div class="example-names"><span>Responses</span><span class="tab-button">409</span></div><div class="tab"><div><div class="inner"><div class="description"><p>Invalid Argument</p>
 </div><h5>Headers</h5><pre><code><span class="hljs-attribute">Content-Type</span>: <span class="hljs-string">application/json</span></code></pre><div style="height: 1px;"></div><h5>Body</h5><pre><code>{
-  "<span class="hljs-attribute">code</span>": <span class="hljs-value"><span class="hljs-string">"409"</span></span>,
+  "<span class="hljs-attribute">code</span>": <span class="hljs-value"><span class="hljs-string">"InvalidArgument"</span></span>,
   "<span class="hljs-attribute">message</span>": <span class="hljs-value"><span class="hljs-string">"nomsId (INVALID): Invalid characters"</span>
 </span>}</code></pre><div style="height: 1px;"></div><h5>Schema</h5><pre><code>{
   "<span class="hljs-attribute">required</span>": <span class="hljs-value">[
@@ -49,58 +49,7 @@ HOST: <a href="http://viper-dev.hmpps.dsd.io">http://viper-dev.hmpps.dsd.io</a><
   ]</span>,
   "<span class="hljs-attribute">properties</span>": <span class="hljs-value">{
     "<span class="hljs-attribute">code</span>": <span class="hljs-value">{
-      "<span class="hljs-attribute">type</span>": <span class="hljs-value"><span class="hljs-string">"number"</span>
-    </span>}</span>,
-    "<span class="hljs-attribute">message</span>": <span class="hljs-value">{
       "<span class="hljs-attribute">type</span>": <span class="hljs-value"><span class="hljs-string">"string"</span>
-    </span>}
-  </span>}
-</span>}</code></pre><div style="height: 1px;"></div></div></div></div></div></div><div class="tab"><div><div class="inner"><h5>Headers</h5><pre><code><span class="hljs-attribute">Content-Type</span>: <span class="hljs-string">application/json</span></code></pre><div style="height: 1px;"></div></div></div><div class="tabs"><div class="example-names"><span>Responses</span><span class="tab-button">401</span></div><div class="tab"><div><div class="inner"><div class="description"><p>Unauthorized</p>
-</div><h5>Headers</h5><pre><code><span class="hljs-attribute">Content-Type</span>: <span class="hljs-string">application/json</span></code></pre><div style="height: 1px;"></div><h5>Body</h5><pre><code>{
-  "<span class="hljs-attribute">code</span>": <span class="hljs-value"><span class="hljs-string">"401"</span></span>,
-  "<span class="hljs-attribute">message</span>": <span class="hljs-value"><span class="hljs-string">"Unauthorized; User or application must authenticate"</span>
-</span>}</code></pre><div style="height: 1px;"></div><h5>Schema</h5><pre><code>{
-  "<span class="hljs-attribute">required</span>": <span class="hljs-value">[
-    <span class="hljs-string">"code"</span>,
-    <span class="hljs-string">"message"</span>
-  ]</span>,
-  "<span class="hljs-attribute">properties</span>": <span class="hljs-value">{
-    "<span class="hljs-attribute">code</span>": <span class="hljs-value">{
-      "<span class="hljs-attribute">type</span>": <span class="hljs-value"><span class="hljs-string">"number"</span>
-    </span>}</span>,
-    "<span class="hljs-attribute">message</span>": <span class="hljs-value">{
-      "<span class="hljs-attribute">type</span>": <span class="hljs-value"><span class="hljs-string">"string"</span>
-    </span>}
-  </span>}
-</span>}</code></pre><div style="height: 1px;"></div></div></div></div></div></div><div class="tab"><div><div class="inner"><h5>Headers</h5><pre><code><span class="hljs-attribute">Content-Type</span>: <span class="hljs-string">application/json</span></code></pre><div style="height: 1px;"></div></div></div><div class="tabs"><div class="example-names"><span>Responses</span><span class="tab-button">403</span></div><div class="tab"><div><div class="inner"><div class="description"><p>Forbidden</p>
-</div><h5>Headers</h5><pre><code><span class="hljs-attribute">Content-Type</span>: <span class="hljs-string">application/json</span></code></pre><div style="height: 1px;"></div><h5>Body</h5><pre><code>{
-  "<span class="hljs-attribute">code</span>": <span class="hljs-value"><span class="hljs-string">"403"</span></span>,
-  "<span class="hljs-attribute">message</span>": <span class="hljs-value"><span class="hljs-string">"Forbidden; User not authorized to take this action"</span>
-</span>}</code></pre><div style="height: 1px;"></div><h5>Schema</h5><pre><code>{
-  "<span class="hljs-attribute">required</span>": <span class="hljs-value">[
-    <span class="hljs-string">"code"</span>,
-    <span class="hljs-string">"message"</span>
-  ]</span>,
-  "<span class="hljs-attribute">properties</span>": <span class="hljs-value">{
-    "<span class="hljs-attribute">code</span>": <span class="hljs-value">{
-      "<span class="hljs-attribute">type</span>": <span class="hljs-value"><span class="hljs-string">"number"</span>
-    </span>}</span>,
-    "<span class="hljs-attribute">message</span>": <span class="hljs-value">{
-      "<span class="hljs-attribute">type</span>": <span class="hljs-value"><span class="hljs-string">"string"</span>
-    </span>}
-  </span>}
-</span>}</code></pre><div style="height: 1px;"></div></div></div></div></div></div><div class="tab"><div><div class="inner"><h5>Headers</h5><pre><code><span class="hljs-attribute">Content-Type</span>: <span class="hljs-string">application/json</span></code></pre><div style="height: 1px;"></div></div></div><div class="tabs"><div class="example-names"><span>Responses</span><span class="tab-button">500</span></div><div class="tab"><div><div class="inner"><div class="description"><p>Unexpected Error</p>
-</div><h5>Headers</h5><pre><code><span class="hljs-attribute">Content-Type</span>: <span class="hljs-string">application/json</span></code></pre><div style="height: 1px;"></div><h5>Body</h5><pre><code>{
-  "<span class="hljs-attribute">code</span>": <span class="hljs-value"><span class="hljs-string">"500"</span></span>,
-  "<span class="hljs-attribute">message</span>": <span class="hljs-value"><span class="hljs-string">"Internal Server Error"</span>
-</span>}</code></pre><div style="height: 1px;"></div><h5>Schema</h5><pre><code>{
-  "<span class="hljs-attribute">required</span>": <span class="hljs-value">[
-    <span class="hljs-string">"code"</span>,
-    <span class="hljs-string">"message"</span>
-  ]</span>,
-  "<span class="hljs-attribute">properties</span>": <span class="hljs-value">{
-    "<span class="hljs-attribute">code</span>": <span class="hljs-value">{
-      "<span class="hljs-attribute">type</span>": <span class="hljs-value"><span class="hljs-string">"number"</span>
     </span>}</span>,
     "<span class="hljs-attribute">message</span>": <span class="hljs-value">{
       "<span class="hljs-attribute">type</span>": <span class="hljs-value"><span class="hljs-string">"string"</span>
