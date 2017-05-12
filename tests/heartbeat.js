@@ -44,16 +44,16 @@ describe('api', function () {
         tag: 'test',
       };
 
-      var env = {
-        VERSION_NUMBER   : expects.version,
-        BUILD_DATE       : expects.date,
-        COMMIT_ID        : expects.commit,
-        BUILD_TAG        : expects.tag,
+      var config = {
+        version   : expects.version,
+        buildDate : expects.date,
+        commitId  : expects.commit,
+        buildTag  : expects.tag,
       };
 
       it('returns JSON with app information', function (done) {
 
-        request(app(env))
+        request(app(config))
           .get('/ping')
           .set('Accept', 'application/json')
           .expect('Content-Type', /json/)
@@ -84,7 +84,7 @@ describe('api', function () {
           throw error;
         }
 
-        this.VIPER_API_DATABASE = this.db.getMongouri('viper-heathchecks-test');
+        this.dbConn = this.db.getMongouri('viper-heathchecks-test');
 
         done();
       });
@@ -96,7 +96,7 @@ describe('api', function () {
           throw error;
         }
 
-        delete this.VIPER_API_DATABASE;
+        delete this.dbConn;
 
         done();
       });
@@ -134,7 +134,7 @@ describe('api', function () {
       };
 
       beforeEach(function () {
-        this.server = app({ VIPER_API_DATABASE: this.VIPER_API_DATABASE });
+        this.server = app({ dbConn: this.dbConn });
       });
 
       it('returns the expected response report', function (done) {

@@ -1,10 +1,25 @@
 const restify = require('restify');
 const restifySwagger = require('node-restify-swagger');
 const restifyValidation = require('node-restify-validation');
-const MongoClient = require('mongodb').MongoClient;
 
-module.exports = (config) => {
+const configureSwagger = (server) => {
+  server.get(/^\/dist\/?.*/, restify.serveStatic({
+    directory: './node_modules/swagger-ui',
+    default: 'index.html',
+  }));
 
+  restifySwagger.swaggerPathPrefix = '/swagger/';
+  restifySwagger.configure(server, {
+    allowMethodInModelNames: true,
+    basePath: '/',
+  });
+
+  restifySwagger.loadRestifyRoutes();
+
+  return server;
+};
+
+const getServerOptions = (config) => {
   var options = {
     //certificate: fs.readFileSync('path/to/server/certificate'),
     //key: fs.readFileSync('path/to/server/key'),
@@ -17,19 +32,19 @@ module.exports = (config) => {
     options.log = config.log;
   }
 
-  var server = restify.createServer(options);
+  return options;
+};
+
+const registerControllers = (server) =>
+  require('./routes/heartbeat')(server) &&
+  require('./routes/offender')(server);
+
+module.exports = (config) => {
+  var server = restify.createServer(getServerOptions(config));
   server.config = config;
-
-  server.use((req, res, next) =>
-    server.db || !config.dbConn ? next() : MongoClient.connect(config.dbConn, (err, db) => {
-      if (err) {
-        return next(err);
-      }
-
-      server.db = db;
-
-      next();
-    }));
+  if (config.db) {
+    server.db = config.db;
+  }
 
   server.use(restify.acceptParser(server.acceptable));
   //server.use(restify.authorizationParser());
@@ -64,21 +79,7 @@ module.exports = (config) => {
     errorHandler: restify.errors.InvalidArgumentError,
   }));
 
-  require('./routes/heartbeat')(server);
-  require('./routes/offender')(server);
+  registerControllers(server);
 
-  server.get(/^\/dist\/?.*/, restify.serveStatic({
-    directory: './node_modules/swagger-ui',
-    default: 'index.html',
-  }));
-
-  restifySwagger.swaggerPathPrefix = '/swagger/';
-  restifySwagger.configure(server, {
-    allowMethodInModelNames: true,
-    basePath: '/',
-  });
-
-  restifySwagger.loadRestifyRoutes();
-
-  return server;
+  return configureSwagger(server);
 };

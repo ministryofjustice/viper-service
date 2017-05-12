@@ -1,3 +1,20 @@
+const dbClient = require('../db/sql');
+
 module.exports = (config, cb) => {
-  return cb(config);
+  if (!config.dbConn) {
+    return cb(config);
+  }
+
+  dbClient.connect(config.dbConn, (error, db) => {
+    if (error) {
+      config.log.error(error, 'Failed to connect to Database');
+    }
+
+    if (db) {
+      config.log.info('Database connection estabilshed');
+      config.db = db;
+    }
+
+    cb(config);
+  });
 };

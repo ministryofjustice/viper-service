@@ -1,0 +1,116 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "title": "Analytics API",
+        "version": "",
+        "description": "Provides the ability to query analytics results sets\n\nFORMAT: 1A\nHOST: http://viper-dev.hmpps.dsd.io"
+    },
+    "host": "viper-dev.hmpps.dsd.io",
+    "basePath": "/",
+    "schemes": [
+        "http"
+    ],
+    "paths": {
+        "/offender/{nomsId}/viper": {
+            "get": {
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "headers": {},
+                        "examples": {
+                            "application/json": {
+                                "nomsId": "A1234BC",
+                                "viperRating": 0.56
+                            }
+                        },
+                        "schema": {
+                            "type": "object",
+                            "required": [
+                                "nomsId",
+                                "viperRating"
+                            ],
+                            "properties": {
+                                "nomsId": {
+                                    "type": "string",
+                                    "description": "The NOMS ID of the relevant record"
+                                },
+                                "viperRating": {
+                                    "type": "number",
+                                    "description": "A percentile VIPER Score"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "headers": {},
+                        "examples": {
+                            "application/json": {
+                                "code": "ResourceNotFound",
+                                "message": "/offender/C4321BA/viper does not exist"
+                            }
+                        },
+                        "schema": {
+                            "required": [
+                                "code",
+                                "message"
+                            ],
+                            "properties": {
+                                "code": {
+                                    "type": "string"
+                                },
+                                "message": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Invalid Argument",
+                        "headers": {},
+                        "examples": {
+                            "application/json": {
+                                "code": "InvalidArgument",
+                                "message": "nomsId (INVALID): Invalid characters"
+                            }
+                        },
+                        "schema": {
+                            "required": [
+                                "code",
+                                "message"
+                            ],
+                            "properties": {
+                                "code": {
+                                    "type": "string"
+                                },
+                                "message": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                },
+                "summary": "Retrieve VIPER Score",
+                "description": "Retrieves a single VIPER Score from the dataset",
+                "tags": [
+                    "VIPER Score"
+                ],
+                "parameters": [
+                    {
+                        "name": "nomsId",
+                        "in": "path",
+                        "description": "A known NOMS ID",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ]
+            }
+        }
+    },
+    "definitions": {
+        "Retrieve VIPER Score": {}
+    }
+}
