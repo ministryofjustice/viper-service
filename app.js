@@ -4,8 +4,11 @@ const restifyValidation = require('node-restify-validation');
 
 const configureSwagger = (server) => {
   server.get(/^\/dist\/?.*/, restify.serveStatic({
-    directory: './node_modules/swagger-ui',
+    directory: 'node_modules/swagger-ui',
     default: 'index.html',
+  }));
+  server.get(/^\/docs\/?.*/, restify.serveStatic({
+    directory: __dirname
   }));
 
   restifySwagger.swaggerPathPrefix = '/swagger/';

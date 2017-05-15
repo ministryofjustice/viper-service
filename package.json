@@ -14,8 +14,7 @@
     "test": "mocha ./tests/**/**.js ./tests/**.js",
     "test-report": "mocha ./tests/**/**.js ./tests/**.js --reporter mocha-junit-reporter",
     "docs-test": "./node_modules/dredd/bin/dredd",
-    "docs-render": "./node_modules/aglio/bin/aglio.js --theme-variables slate --theme-template triple -i docs/docs.apib -o docs/index.htm",
-    "docs-convert": "./node_modules/apib2swagger/bin/apib2swagger.js -i docs/docs.apib -o docs/resources.json"
+    "docs-render": "./node_modules/apib2swagger/bin/apib2swagger.js -i docs/docs.apib -o docs/resources.json && ./node_modules/aglio/bin/aglio.js --theme-variables slate --theme-template triple -i docs/docs.apib -o docs/index.htm"
   },
   "dependencies": {
     "bunyan": "1.8.10",

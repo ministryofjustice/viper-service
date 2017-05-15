@@ -11,38 +11,104 @@
         "http"
     ],
     "paths": {
+        "/offender/viper": {
+            "post": {
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "headers": {},
+                        "examples": {
+                            "application/json": [
+                                {
+                                    "nomsId": "A1234BC",
+                                    "viperRating": "0.56"
+                                },
+                                {
+                                    "nomsId": "A5678BC",
+                                    "viperRating": "0.65"
+                                }
+                            ]
+                        },
+                        "schema": {
+                            "type": "array",
+                            "items": {}
+                        }
+                    }
+                },
+                "summary": "Record VIPER Rating",
+                "description": "Records a single VIPER Rating from the dataset",
+                "tags": [
+                    "VIPER Rating"
+                ],
+                "parameters": [
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "$schema": "http://json-schema.org/draft-04/schema#",
+                                    "type": "object",
+                                    "properties": {
+                                        "nomsId": {
+                                            "type": "string",
+                                            "description": "A valid NOMS ID"
+                                        },
+                                        "viperRating": {
+                                            "type": "string",
+                                            "description": "A percentile VIPER Rating"
+                                        }
+                                    },
+                                    "required": [
+                                        "nomsId",
+                                        "viperRating"
+                                    ]
+                                },
+                                {
+                                    "$schema": "http://json-schema.org/draft-04/schema#",
+                                    "type": "array"
+                                }
+                            ]
+                        }
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ]
+            }
+        },
         "/offender/{nomsId}/viper": {
             "get": {
                 "responses": {
                     "200": {
-                        "description": "OK",
+                        "description": "Success",
                         "headers": {},
                         "examples": {
                             "application/json": {
                                 "nomsId": "A1234BC",
-                                "viperRating": 0.56
+                                "viperRating": "0.56"
                             }
                         },
                         "schema": {
                             "type": "object",
-                            "required": [
-                                "nomsId",
-                                "viperRating"
-                            ],
                             "properties": {
                                 "nomsId": {
                                     "type": "string",
-                                    "description": "The NOMS ID of the relevant record"
+                                    "description": "A valid NOMS ID"
                                 },
                                 "viperRating": {
-                                    "type": "number",
-                                    "description": "A percentile VIPER Score"
+                                    "type": "string",
+                                    "description": "A percentile VIPER Rating"
                                 }
-                            }
+                            },
+                            "required": [
+                                "nomsId",
+                                "viperRating"
+                            ]
                         }
                     },
                     "404": {
-                        "description": "Not Found",
+                        "description": "Resource Not Found",
                         "headers": {},
                         "examples": {
                             "application/json": {
@@ -51,18 +117,21 @@
                             }
                         },
                         "schema": {
+                            "type": "object",
+                            "properties": {
+                                "code": {
+                                    "type": "string",
+                                    "description": "HTTP Status Code"
+                                },
+                                "message": {
+                                    "type": "string",
+                                    "description": "Description of status"
+                                }
+                            },
                             "required": [
                                 "code",
                                 "message"
-                            ],
-                            "properties": {
-                                "code": {
-                                    "type": "string"
-                                },
-                                "message": {
-                                    "type": "string"
-                                }
-                            }
+                            ]
                         }
                     },
                     "409": {
@@ -75,25 +144,28 @@
                             }
                         },
                         "schema": {
+                            "type": "object",
+                            "properties": {
+                                "code": {
+                                    "type": "string",
+                                    "description": "HTTP Status Code"
+                                },
+                                "message": {
+                                    "type": "string",
+                                    "description": "Description of status"
+                                }
+                            },
                             "required": [
                                 "code",
                                 "message"
-                            ],
-                            "properties": {
-                                "code": {
-                                    "type": "string"
-                                },
-                                "message": {
-                                    "type": "string"
-                                }
-                            }
+                            ]
                         }
                     }
                 },
-                "summary": "Retrieve VIPER Score",
-                "description": "Retrieves a single VIPER Score from the dataset",
+                "summary": "Retrieve VIPER Rating",
+                "description": "Retrieves a single VIPER Rating from the dataset",
                 "tags": [
-                    "VIPER Score"
+                    "VIPER Rating"
                 ],
                 "parameters": [
                     {
@@ -111,6 +183,48 @@
         }
     },
     "definitions": {
-        "Retrieve VIPER Score": {}
+        "Record VIPER Rating": {},
+        "Retrieve VIPER Rating": {},
+        "Create VIPER Rating": {
+            "type": "object",
+            "required": [
+                "nomsId"
+            ],
+            "properties": {
+                "nomsId": {
+                    "type": "string"
+                }
+            }
+        },
+        "VIPER Rating": {
+            "type": "object",
+            "required": [
+                "nomsId",
+                "viperRating"
+            ],
+            "properties": {
+                "nomsId": {
+                    "type": "string"
+                },
+                "viperRating": {
+                    "type": "number"
+                }
+            }
+        },
+        "HTTP Status Message": {
+            "type": "object",
+            "required": [
+                "code",
+                "message"
+            ],
+            "properties": {
+                "code": {
+                    "type": "string"
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        }
     }
 }
