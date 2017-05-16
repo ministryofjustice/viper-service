@@ -4,4 +4,4 @@ test:
         environment:
           MOCHA_FILE: $CIRCLE_TEST_REPORTS/junit/test-results.xml
   post:
-    - npm docs-test
+    - npm run-script docs-test
