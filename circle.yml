@@ -3,8 +3,5 @@ test:
     - npm run-script test-report:
         environment:
           MOCHA_FILE: $CIRCLE_TEST_REPORTS/junit/test-results.xml
-  pre:
-    - dredd
-dependencies:
-  pre:
-    - npm install -g dredd@3.4.1
+  post:
+    - npm docs-test
