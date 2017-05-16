@@ -19,6 +19,8 @@ level: info
 timestamp: false
 silent: false
 path: []
+server: npm start
+server-wait: 3
 hooks-worker-timeout: 5000
 hooks-worker-connect-timeout: 1500
 hooks-worker-connect-retry: 500
