@@ -1,6 +1,7 @@
 const restify = require('restify');
 const restifySwagger = require('node-restify-swagger');
 const restifyValidation = require('node-restify-validation');
+const requireAuth = require('./server/require-auth');
 
 const configureSwagger = (server) => {
   server.get(/^\/dist\/?.*/, restify.serveStatic({
@@ -38,17 +39,7 @@ const getServerOptions = (config) => {
   return options;
 };
 
-const registerControllers = (server) =>
-  require('./routes/heartbeat')(server) &&
-  require('./routes/offender')(server);
-
-module.exports = (config) => {
-  var server = restify.createServer(getServerOptions(config));
-  server.config = config;
-  if (config.db) {
-    server.db = config.db;
-  }
-
+const configureStandardStuff = (server) => {
   server.use(restify.acceptParser(server.acceptable));
   //server.use(restify.authorizationParser());
   server.use(restify.dateParser());
@@ -73,6 +64,25 @@ module.exports = (config) => {
 
   // fix for known curl issue
   server.pre(restify.pre.userAgentConnection());
+};
+
+const registerControllers = (server) =>
+  require('./routes/heartbeat')(server) &&
+  require('./routes/offender')(server);
+
+module.exports = (config) => {
+  var server = restify.createServer(getServerOptions(config));
+  server.config = config;
+  if (config.db) {
+    server.db = config.db;
+  }
+
+  if (config.authUser && config.authPass) {
+    config.log.info({user: config.authUser}, 'Enabling basic auth');
+    server.use(requireAuth(config.authUser, config.authPass));
+  }
+
+  configureStandardStuff(server);
 
   server.use(restifyValidation.validationPlugin({
     // Shows errors as an array

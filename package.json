@@ -17,6 +17,7 @@
     "docs-render": "./node_modules/apib2swagger/bin/apib2swagger.js -i docs/docs.apib -o docs/resources.json && ./node_modules/aglio/bin/aglio.js --theme-variables slate --theme-template triple -i docs/docs.apib -o docs/index.htm"
   },
   "dependencies": {
+    "basic-auth": "^1.1.0",
     "bunyan": "1.8.10",
     "crypto": "0.0.3",
     "node-restify-swagger": "0.1.8",

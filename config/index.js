@@ -24,6 +24,8 @@ module.exports = (cb) => {
     commitId: env.COMMIT_ID,
     buildTag: env.BUILD_TAG,
     port: normalizePort(env.PORT || '3000'),
+    authUser: env.BASIC_AUTH_USER,
+    authPass: env.BASIC_AUTH_PASS,
   };
 
   config.log = new Logger({
