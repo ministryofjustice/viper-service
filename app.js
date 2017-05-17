@@ -1,26 +1,9 @@
 const restify = require('restify');
-const restifySwagger = require('node-restify-swagger');
-const restifyValidation = require('node-restify-validation');
+const SwaggerRestify = require('swagger-restify-mw');
 const requireAuth = require('./server/require-auth');
 
-const configureSwagger = (server) => {
-  server.get(/^\/dist\/?.*/, restify.serveStatic({
-    directory: 'node_modules/swagger-ui',
-    default: 'index.html',
-  }));
-  server.get(/^\/docs\/?.*/, restify.serveStatic({
-    directory: __dirname
-  }));
-
-  restifySwagger.swaggerPathPrefix = '/swagger/';
-  restifySwagger.configure(server, {
-    allowMethodInModelNames: true,
-    basePath: '/',
-  });
-
-  restifySwagger.loadRestifyRoutes();
-
-  return server;
+var swaggerConfig = {
+  appRoot: __dirname // required config
 };
 
 const getServerOptions = (config) => {
@@ -39,9 +22,20 @@ const getServerOptions = (config) => {
   return options;
 };
 
-const configureStandardStuff = (server) => {
+const createServer = (config) => {
+  var server = restify.createServer(getServerOptions(config));
+
+  server.config = config;
+  if (config.db) {
+    server.db = config.db;
+  }
+
+  return server;
+};
+
+const setupMiddleware = (server) => {
   server.use(restify.acceptParser(server.acceptable));
-  //server.use(restify.authorizationParser());
+  server.use(restify.authorizationParser());
   server.use(restify.dateParser());
   server.use(restify.queryParser());
   server.use(restify.gzipResponse());
@@ -64,35 +58,34 @@ const configureStandardStuff = (server) => {
 
   // fix for known curl issue
   server.pre(restify.pre.userAgentConnection());
+
+  return server;
 };
 
-const registerControllers = (server) =>
-  require('./routes/heartbeat')(server) &&
-  require('./routes/offender')(server);
-
-module.exports = (config) => {
-  var server = restify.createServer(getServerOptions(config));
-  server.config = config;
-  if (config.db) {
-    server.db = config.db;
-  }
+const setupAuth = (server) => {
+  var config = server.config;
 
   if (config.authUser && config.authPass) {
     config.log.info({user: config.authUser}, 'Enabling basic auth');
     server.use(requireAuth(config.authUser, config.authPass));
   }
 
-  configureStandardStuff(server);
+  return server;
+};
 
-  server.use(restifyValidation.validationPlugin({
-    // Shows errors as an array
-    errorsAsArray: false,
-    // Not exclude incoming variables not specified in validator rules
-    forbidUndefinedVariables: false,
-    errorHandler: restify.errors.InvalidArgumentError,
-  }));
+module.exports = (config, ready) => {
+  var server = createServer(config);
+  server = setupMiddleware(server);
+  server = setupAuth(server);
 
-  registerControllers(server);
+  SwaggerRestify.create(swaggerConfig, (err, swaggerRestify) => {
+    if (err) {
+      throw err;
+    }
 
-  return configureSwagger(server);
+    // install middleware
+    swaggerRestify.register(server);
+
+    ready(server);
+  });
 };

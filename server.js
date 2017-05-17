@@ -33,10 +33,11 @@ configure((config) => {
   process.on('uncaughtException', onProcessError(config));
   process.on('unhandledRejection', onProcessError(config));
 
-  const server = app(config);
-  server.on('listening', onServerListening(server, config));
-  server.on('after', restify.auditLogger(config));
+  app(config, (server) => {
+    server.on('listening', onServerListening(server, config));
+    server.on('after', restify.auditLogger(config));
 
-  // start server
-  server.listen(config.port);
+    // start server
+    server.listen(config.port);
+  });
 });

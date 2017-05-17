@@ -18,20 +18,27 @@
                         "description": "Created",
                         "headers": {},
                         "examples": {
-                            "application/json": [
-                                {
-                                    "nomsId": "A1234BC",
-                                    "viperRating": "0.56"
-                                },
-                                {
-                                    "nomsId": "A5678BC",
-                                    "viperRating": "0.65"
-                                }
-                            ]
+                            "application/json": {
+                                "nomsId": "A1234BC",
+                                "viperRating": "0.56"
+                            }
                         },
                         "schema": {
-                            "type": "array",
-                            "items": {}
+                            "type": "object",
+                            "properties": {
+                                "nomsId": {
+                                    "type": "string",
+                                    "description": "A valid NOMS ID"
+                                },
+                                "viperRating": {
+                                    "type": "string",
+                                    "description": "A percentile VIPER Rating"
+                                }
+                            },
+                            "required": [
+                                "nomsId",
+                                "viperRating"
+                            ]
                         }
                     }
                 },
@@ -45,29 +52,21 @@
                         "name": "body",
                         "in": "body",
                         "schema": {
-                            "anyOf": [
-                                {
-                                    "$schema": "http://json-schema.org/draft-04/schema#",
-                                    "type": "object",
-                                    "properties": {
-                                        "nomsId": {
-                                            "type": "string",
-                                            "description": "A valid NOMS ID"
-                                        },
-                                        "viperRating": {
-                                            "type": "string",
-                                            "description": "A percentile VIPER Rating"
-                                        }
-                                    },
-                                    "required": [
-                                        "nomsId",
-                                        "viperRating"
-                                    ]
+                            "$schema": "http://json-schema.org/draft-04/schema#",
+                            "type": "object",
+                            "properties": {
+                                "nomsId": {
+                                    "type": "string",
+                                    "description": "A valid NOMS ID"
                                 },
-                                {
-                                    "$schema": "http://json-schema.org/draft-04/schema#",
-                                    "type": "array"
+                                "viperRating": {
+                                    "type": "string",
+                                    "description": "A percentile VIPER Rating"
                                 }
+                            },
+                            "required": [
+                                "nomsId",
+                                "viperRating"
                             ]
                         }
                     }
@@ -185,18 +184,7 @@
     "definitions": {
         "Record VIPER Rating": {},
         "Retrieve VIPER Rating": {},
-        "Create VIPER Rating": {
-            "type": "object",
-            "required": [
-                "nomsId"
-            ],
-            "properties": {
-                "nomsId": {
-                    "type": "string"
-                }
-            }
-        },
-        "VIPER Rating": {
+        "VIPERRating": {
             "type": "object",
             "required": [
                 "nomsId",
@@ -211,7 +199,7 @@
                 }
             }
         },
-        "HTTP Status Message": {
+        "HTTPStatusMessage": {
             "type": "object",
             "required": [
                 "code",

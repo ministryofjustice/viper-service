@@ -1,21 +1,16 @@
-const basicAuth = require('basic-auth');
-
 function unauthorized(res) {
   res.set('WWW-Authenticate', 'Basic realm=Password Required');
   return res.send(401);
 }
 
-module.exports = function requireAuth(username, password) {
-  return function requireAuthentication(req, res, next) {
-    const auth = basicAuth(req);
-    if (!auth || !auth.name || !auth.pass) {
-      return unauthorized(res);
-    }
+module.exports =
+  (username, password) =>
+    (req, res, next) => {
+      var auth = req.authorization.basic;
 
-    if (auth.name !== username || auth.pass !== password) {
-      return unauthorized(res);
-    }
+      if (!auth || !auth.username || auth.username !== username || !auth.password || auth.password !== password) {
+        return unauthorized(res);
+      }
 
-    return next();
-  };
-};
+      next();
+    };

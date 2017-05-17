@@ -11,7 +11,7 @@ Records a single VIPER Rating from the dataset
 
 + Request Record a single VIPER Rating record (application/json)
 
-    + Attributes (VIPER Rating)
+    + Attributes (VIPERRating)
         + nomsId: `A1234BC`
         + viperRating: `0.56`
 
@@ -23,35 +23,9 @@ Records a single VIPER Rating from the dataset
 
             Location: /offender/A1234BC/viper
 
-    + Attributes (VIPER Rating)
+    + Attributes (VIPERRating)
         + nomsId: `A1234BC`
         + viperRating: `0.56`
-
-+ Request Record multiple VIPER Rating record (application/json)
-
-    + Attributes (array)
-        + (VIPER Rating)
-            + nomsId: `A1234BC`
-            + viperRating: `0.56`
-        + (VIPER Rating)
-            + nomsId: `A5678BC`
-            + viperRating: `0.65`
-
-+ Response 201 (application/json)
-
-    Created
-
-    + Headers
-
-            Location: /offender/viper?nomId=A1234BC,A5678BC
-
-    + Attributes (array)
-        + (VIPER Rating)
-            + nomsId: `A1234BC`
-            + viperRating: `0.56`
-        + (VIPER Rating)
-            + nomsId: `A5678BC`
-            + viperRating: `0.65`
 
 ### Retrieve VIPER Rating [GET /offender/{nomsId}/viper]
 
@@ -68,7 +42,7 @@ Retrieves a single VIPER Rating from the dataset
 
     Success
 
-    + Attributes (VIPER Rating)
+    + Attributes (VIPERRating)
         + nomsId: `A1234BC`
         + viperRating: `0.56`
 
@@ -80,7 +54,7 @@ Retrieves a single VIPER Rating from the dataset
 
     Resource Not Found
 
-    + Attributes (HTTP Status Message)
+    + Attributes (HTTPStatusMessage)
         + code: `ResourceNotFound`
         + message: `/offender/C4321BA/viper does not exist`
 
@@ -92,22 +66,19 @@ Retrieves a single VIPER Rating from the dataset
 
     Invalid Argument
 
-    + Attributes (HTTP Status Message)
+    + Attributes (HTTPStatusMessage)
         + code: `InvalidArgument`
         + message: `nomsId (INVALID): Invalid characters`
 
 ## Data Structures
 
-### Create VIPER Rating
-
-+ nomsId (string, required) - the NOMS ID of the new record
-
-### VIPER Rating
+### VIPERRating
 
 + nomsId (string, required) - A valid NOMS ID
+    + pattern: `A1234BC`
 + viperRating (number, required) - A percentile VIPER Rating
 
-### HTTP Status Message
+### HTTPStatusMessage
 
 + code (string, required) - HTTP Status Code
 + message (string, required) - Description of status
