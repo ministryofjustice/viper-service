@@ -1,6 +1,6 @@
 const restify = require('restify');
 const SwaggerRestify = require('swagger-restify-mw');
-const requireAuth = require('./server/require-auth');
+const setupAuth = require('./api/helpers/auth.js');
 
 var swaggerConfig = {
   appRoot: __dirname // required config
@@ -40,35 +40,10 @@ const setupMiddleware = (server) => {
   server.use(restify.queryParser());
   server.use(restify.gzipResponse());
   server.use(restify.bodyParser());
-  //server.use(restify.requestExpiry());
-  /*
-  server.use(restify.throttle({
-    burst: 100,
-    rate: 50,
-    ip: true,
-    overrides: {
-      '192.168.1.1': {
-        rate: 0,        // unlimited
-        burst: 0
-      }
-    }
-  }));
-  */
   server.use(restify.conditionalRequest());
 
   // fix for known curl issue
   server.pre(restify.pre.userAgentConnection());
-
-  return server;
-};
-
-const setupAuth = (server) => {
-  var config = server.config;
-
-  if (config.authUser && config.authPass) {
-    config.log.info({user: config.authUser}, 'Enabling basic auth');
-    server.use(requireAuth(config.authUser, config.authPass));
-  }
 
   return server;
 };

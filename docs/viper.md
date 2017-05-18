@@ -5,28 +5,6 @@ HOST: http://viper-dev.hmpps.dsd.io
 
 The Violence in Prison Estimator Rating
 
-### Record VIPER Rating [POST /offender/viper]
-
-Records a single VIPER Rating from the dataset
-
-+ Request Record a single VIPER Rating record (application/json)
-
-    + Attributes (VIPERRating)
-        + nomsId: `A1234BC`
-        + viperRating: `0.56`
-
-+ Response 201 (application/json)
-
-    Created
-
-    + Headers
-
-            Location: /offender/A1234BC/viper
-
-    + Attributes (VIPERRating)
-        + nomsId: `A1234BC`
-        + viperRating: `0.56`
-
 ### Retrieve VIPER Rating [GET /offender/{nomsId}/viper]
 
 Retrieves a single VIPER Rating from the dataset
@@ -42,43 +20,27 @@ Retrieves a single VIPER Rating from the dataset
 
     Success
 
-    + Attributes (VIPERRating)
+    + Attributes (object)
         + nomsId: `A1234BC`
-        + viperRating: `0.56`
+        + viperRating: 0.56 (number)
 
-+ Request Unknown nomsId (application/json)
-    + Parameters
-        + nomsId: `C4321BA`
+    + Schema
 
-+ Response 404 (application/json)
-
-    Resource Not Found
-
-    + Attributes (HTTPStatusMessage)
-        + code: `ResourceNotFound`
-        + message: `/offender/C4321BA/viper does not exist`
-
-+ Request Invalid nomsId (application/json)
-    + Parameters
-        + nomsId: `1ABCD23`
-
-+ Response 409 (application/json)
-
-    Invalid Argument
-
-    + Attributes (HTTPStatusMessage)
-        + code: `InvalidArgument`
-        + message: `nomsId (INVALID): Invalid characters`
-
-## Data Structures
-
-### VIPERRating
-
-+ nomsId (string, required) - A valid NOMS ID
-    + pattern: `A1234BC`
-+ viperRating (number, required) - A percentile VIPER Rating
-
-### HTTPStatusMessage
-
-+ code (string, required) - HTTP Status Code
-+ message (string, required) - Description of status
+            {
+                "$schema": "http://json-schema.org/draft-04/schema#",
+                "type": "object",
+                "properties": {
+                    "nomsId": {
+                        "type": "string",
+                        "description": "A valid NOMS ID"
+                    },
+                    "viperRating": {
+                        "type": "number",
+                        "description": "A percentile VIPER Rating"
+                    }
+                },
+                "required": [
+                    "nomsId",
+                    "viperRating"
+                ]
+            }

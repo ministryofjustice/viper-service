@@ -9,52 +9,6 @@
   schemes:
     - "http"
   paths:
-    /offender/viper:
-      post:
-        x-swagger-router-controller: offender
-        operationId: recordViperRating
-        responses:
-          201:
-            description: "Created"
-            headers: {}
-            examples:
-              application/json:
-                nomsId: "A1234BC"
-                viperRating: 0.56
-            schema:
-              type: "object"
-              properties:
-                nomsId:
-                  type: "string"
-                  description: "A valid NOMS ID"
-                viperRating:
-                  type: "number"
-                  description: "A percentile VIPER Rating"
-              required:
-                - "nomsId"
-                - "viperRating"
-        summary: "Record VIPER Rating"
-        description: "Records a single VIPER Rating from the dataset"
-        tags:
-          - "VIPER Rating"
-        parameters:
-          -
-            name: "body"
-            in: "body"
-            schema:
-              type: "object"
-              properties:
-                nomsId:
-                  type: "string"
-                  description: "A valid NOMS ID"
-                viperRating:
-                  type: "number"
-                  description: "A percentile VIPER Rating"
-              required:
-                - "nomsId"
-                - "viperRating"
-        produces:
-          - "application/json"
     /offender/{nomsId}/viper:
       get:
         x-swagger-router-controller: offender
@@ -79,44 +33,6 @@
               required:
                 - "nomsId"
                 - "viperRating"
-          404:
-            description: "Resource Not Found"
-            headers: {}
-            examples:
-              application/json:
-                code: "ResourceNotFound"
-                message: "/offender/C4321BA/viper does not exist"
-            schema:
-              type: "object"
-              properties:
-                code:
-                  type: "string"
-                  description: "HTTP Status Code"
-                message:
-                  type: "string"
-                  description: "Description of status"
-              required:
-                - "code"
-                - "message"
-          409:
-            description: "Invalid Argument"
-            headers: {}
-            examples:
-              application/json:
-                code: "InvalidArgument"
-                message: "nomsId (INVALID): Invalid characters"
-            schema:
-              type: "object"
-              properties:
-                code:
-                  type: "string"
-                  description: "HTTP Status Code"
-                message:
-                  type: "string"
-                  description: "Description of status"
-              required:
-                - "code"
-                - "message"
         summary: "Retrieve VIPER Rating"
         description: "Retrieves a single VIPER Rating from the dataset"
         tags:
@@ -130,3 +46,5 @@
             type: "string"
         produces:
           - "application/json"
+  definitions:
+    Retrieve VIPER Rating: {}

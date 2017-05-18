@@ -25,6 +25,7 @@
     "crypto": "0.0.3",
     "require-sql": "1.0.0",
     "restify": "4.3.0",
+    "restify-ajv-middleware": "0.0.3",
     "swagger-restify-mw": "0.1.0",
     "tedious": "2.0.0"
   },

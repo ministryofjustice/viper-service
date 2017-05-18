@@ -11,71 +11,6 @@
         "http"
     ],
     "paths": {
-        "/offender/viper": {
-            "post": {
-                "responses": {
-                    "201": {
-                        "description": "Created",
-                        "headers": {},
-                        "examples": {
-                            "application/json": {
-                                "nomsId": "A1234BC",
-                                "viperRating": "0.56"
-                            }
-                        },
-                        "schema": {
-                            "type": "object",
-                            "properties": {
-                                "nomsId": {
-                                    "type": "string",
-                                    "description": "A valid NOMS ID"
-                                },
-                                "viperRating": {
-                                    "type": "string",
-                                    "description": "A percentile VIPER Rating"
-                                }
-                            },
-                            "required": [
-                                "nomsId",
-                                "viperRating"
-                            ]
-                        }
-                    }
-                },
-                "summary": "Record VIPER Rating",
-                "description": "Records a single VIPER Rating from the dataset",
-                "tags": [
-                    "VIPER Rating"
-                ],
-                "parameters": [
-                    {
-                        "name": "body",
-                        "in": "body",
-                        "schema": {
-                            "$schema": "http://json-schema.org/draft-04/schema#",
-                            "type": "object",
-                            "properties": {
-                                "nomsId": {
-                                    "type": "string",
-                                    "description": "A valid NOMS ID"
-                                },
-                                "viperRating": {
-                                    "type": "string",
-                                    "description": "A percentile VIPER Rating"
-                                }
-                            },
-                            "required": [
-                                "nomsId",
-                                "viperRating"
-                            ]
-                        }
-                    }
-                ],
-                "produces": [
-                    "application/json"
-                ]
-            }
-        },
         "/offender/{nomsId}/viper": {
             "get": {
                 "responses": {
@@ -85,7 +20,7 @@
                         "examples": {
                             "application/json": {
                                 "nomsId": "A1234BC",
-                                "viperRating": "0.56"
+                                "viperRating": 0.56
                             }
                         },
                         "schema": {
@@ -96,67 +31,13 @@
                                     "description": "A valid NOMS ID"
                                 },
                                 "viperRating": {
-                                    "type": "string",
+                                    "type": "number",
                                     "description": "A percentile VIPER Rating"
                                 }
                             },
                             "required": [
                                 "nomsId",
                                 "viperRating"
-                            ]
-                        }
-                    },
-                    "404": {
-                        "description": "Resource Not Found",
-                        "headers": {},
-                        "examples": {
-                            "application/json": {
-                                "code": "ResourceNotFound",
-                                "message": "/offender/C4321BA/viper does not exist"
-                            }
-                        },
-                        "schema": {
-                            "type": "object",
-                            "properties": {
-                                "code": {
-                                    "type": "string",
-                                    "description": "HTTP Status Code"
-                                },
-                                "message": {
-                                    "type": "string",
-                                    "description": "Description of status"
-                                }
-                            },
-                            "required": [
-                                "code",
-                                "message"
-                            ]
-                        }
-                    },
-                    "409": {
-                        "description": "Invalid Argument",
-                        "headers": {},
-                        "examples": {
-                            "application/json": {
-                                "code": "InvalidArgument",
-                                "message": "nomsId (INVALID): Invalid characters"
-                            }
-                        },
-                        "schema": {
-                            "type": "object",
-                            "properties": {
-                                "code": {
-                                    "type": "string",
-                                    "description": "HTTP Status Code"
-                                },
-                                "message": {
-                                    "type": "string",
-                                    "description": "Description of status"
-                                }
-                            },
-                            "required": [
-                                "code",
-                                "message"
                             ]
                         }
                     }
@@ -182,37 +63,6 @@
         }
     },
     "definitions": {
-        "Record VIPER Rating": {},
-        "Retrieve VIPER Rating": {},
-        "VIPERRating": {
-            "type": "object",
-            "required": [
-                "nomsId",
-                "viperRating"
-            ],
-            "properties": {
-                "nomsId": {
-                    "type": "string"
-                },
-                "viperRating": {
-                    "type": "number"
-                }
-            }
-        },
-        "HTTPStatusMessage": {
-            "type": "object",
-            "required": [
-                "code",
-                "message"
-            ],
-            "properties": {
-                "code": {
-                    "type": "string"
-                },
-                "message": {
-                    "type": "string"
-                }
-            }
-        }
+        "Retrieve VIPER Rating": {}
     }
 }
