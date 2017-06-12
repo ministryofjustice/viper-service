@@ -61,6 +61,12 @@ module.exports = (config, ready) => {
     // install middleware
     swaggerRestify.register(server);
 
+    server.use((req, res, next) => {
+      server.confog.log.info('error caught');
+
+      next();
+    });
+
     ready(server);
   });
 };

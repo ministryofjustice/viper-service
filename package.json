@@ -12,31 +12,26 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js | ./node_modules/.bin/bunyan -o short",
-    "test": "./node_modules/mocha/bin/mocha ./tests/**/**.js ./tests/**.js",
-    "test-report": "./node_modules/mocha/bin/mocha ./tests/**/**.js ./tests/**.js --reporter mocha-junit-reporter",
+    "test": "./node_modules/mocha/bin/mocha ./test/**/**.js ./test/**.js",
+    "test-report": "./node_modules/mocha/bin/mocha ./test/**/**.js ./test/**.js --reporter mocha-junit-reporter",
     "test-swagger": "./node_modules/swagger/bin/swagger.js project test",
     "verify": "./node_modules/swagger/bin/swagger.js project verify",
-    "docs-test": "./node_modules/dredd/bin/dredd",
-    "docs-render": "./node_modules/apib2swagger/bin/apib2swagger.js -i docs/docs.apib -o api/swagger/swagger.json && ./node_modules/aglio/bin/aglio.js --theme-variables slate --theme-template triple -i docs/docs.apib -o docs/index.htm && ./node_modules/json2yaml/cli.js ./api/swagger/swagger.json > ./api/swagger/swagger.yaml"
+    "docs-test": "./node_modules/dredd/bin/dredd ./api/swagger/swagger.yaml http://127.0.0.1:3000",
+    "docs-render": "./node_modules/spectacle-docs/bin/spectacle.js -t ./docs ./api/swagger/swagger.yaml "
   },
   "dependencies": {
-    "basic-auth": "^1.1.0",
     "bunyan": "1.8.10",
-    "crypto": "0.0.3",
     "require-sql": "1.0.0",
     "restify": "4.3.0",
-    "restify-ajv-middleware": "0.0.3",
     "swagger-restify-mw": "0.1.0",
     "tedious": "2.0.0"
   },
   "devDependencies": {
-    "aglio": "2.3.0",
-    "apib2swagger": "0.8.0",
     "chai": "3.5.0",
-    "dredd": "^3.4.5",
-    "json2yaml": "^1.1.0",
+    "dredd": "3.4.5",
     "mocha": "3.2.0",
     "mocha-junit-reporter": "1.13.0",
+    "spectacle-docs": "0.8.2",
     "supertest": "3.0.0",
     "swagger": "0.7.5"
   }

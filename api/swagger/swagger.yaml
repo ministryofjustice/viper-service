@@ -2,17 +2,27 @@
   swagger: "2.0"
   info:
     title: "Analytics API"
-    version: ""
-    description: "Provides the ability to query analytics results sets\n\nFORMAT: 1A\nHOST: http://viper-dev.hmpps.dsd.io"
+    version: "0.0.1"
+    description: "Provides the ability to query analytics results sets"
   host: "viper-dev.hmpps.dsd.io"
   basePath: "/"
   schemes:
     - "http"
+    - "https"
   paths:
     /offender/{nomsId}/viper:
+      parameters:
+        - in: "path"
+          name: "nomsId"
+          required: true
+          type: "string"
+          pattern: "[A-Z]\\d{4}[A-Z]{2}"
+          description: "A known NOMS ID"
       get:
         x-swagger-router-controller: offender
         operationId: retrieveViperRating
+        summary: "Retrieve VIPER Rating"
+        description: "Retrieves a single VIPER Rating from the dataset"
         responses:
           200:
             description: "Success"
@@ -22,29 +32,49 @@
                 nomsId: "A1234BC"
                 viperRating: 0.56
             schema:
-              type: "object"
-              properties:
-                nomsId:
-                  type: "string"
-                  description: "A valid NOMS ID"
-                viperRating:
-                  type: "number"
-                  description: "A percentile VIPER Rating"
-              required:
-                - "nomsId"
-                - "viperRating"
-        summary: "Retrieve VIPER Rating"
-        description: "Retrieves a single VIPER Rating from the dataset"
+              "$ref": "#/definitions/viperResponse"
+          500:
+            description: "Invalid NOMS Id"
+            headers: {}
+            examples:
+              application/json:
+                message: "Request validation failed: Parameter (nomsId) does not match required pattern: [A-Z]\\d{4}[A-Z]{2}"
+            schema:
+              "$ref": "#/definitions/errorResponse"
+          404:
+            description: "Not Found"
+            headers: {}
+            examples:
+              application/json:
+                message: "Request validation failed: Parameter (nomsId) does not match required pattern: [A-Z]\\d{4}[A-Z]{2}"
+            schema:
+              "$ref": "#/definitions/errorResponse"
         tags:
           - "VIPER Rating"
-        parameters:
-          -
-            name: "nomsId"
-            in: "path"
-            description: "A known NOMS ID"
-            required: true
-            type: "string"
         produces:
           - "application/json"
   definitions:
-    Retrieve VIPER Rating: {}
+    viperResponse:
+      type: "object"
+      properties:
+        nomsId:
+          type: "string"
+          description: "A valid NOMS ID"
+          pattern: "[A-Z]\\d{4}[A-Z]{2}"
+        viperRating:
+          type: "number"
+          description: "A percentile VIPER Rating"
+      required:
+        - "nomsId"
+        - "viperRating"
+    errorResponse:
+      type: "object"
+      properties:
+        code:
+          type: "string"
+          description: "A status code description"
+        message:
+          type: "string"
+          description: "A message detailing the error"
+      required:
+        - "message"

@@ -2,8 +2,8 @@ const restify = require('restify');
 
 const cache = {};
 
-const asJson = (res, fn) =>
-  res.json(fn);
+const asJson = (res, obj) =>
+  res.send(obj);
 
 const withParam = (req, key) =>
   (req.swagger.params[key] && req.swagger.params[key].value);
@@ -31,6 +31,8 @@ module.exports.retrieveViperRating = (req, res, next) => {
   }
 
   asJson(res, successfulViperRating(nomsId, viperRating));
+
+  next();
 };
 
 module.exports.recordViperRating = (req, res, next) => {
@@ -48,4 +50,6 @@ module.exports.recordViperRating = (req, res, next) => {
   cache[nomsId] = viperRating;
 
   asJson(res, successfulViperRating(nomsId, viperRating));
+
+  next();
 };
