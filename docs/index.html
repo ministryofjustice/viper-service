@@ -139,6 +139,20 @@
                   </div>
                   <div class="prop-row prop-group">
                     <div class="prop-name">
+                      <div class="prop-title">404 Not Found</div>
+                      <div class="prop-ref">
+                        <span class="">
+                          <a class="json-schema-ref" href="#/definitions/errorResponse">errorResponse</a>
+                        </span>
+                      </div>
+                      <!-- <span class="swagger-global"></span> <span class="json-schema-reference"><a href=""></a></span> -->
+                    </div>
+                    <div class="prop-value">
+                      <p>Not Found</p>
+                    </div>
+                  </div>
+                  <div class="prop-row prop-group">
+                    <div class="prop-name">
                       <div class="prop-title">500 Internal Server Error</div>
                       <div class="prop-ref">
                         <span class="">
@@ -159,8 +173,18 @@
                     <span>(200 OK)</span>
                   </h5>
                   <div class="hljs"><pre><code class="lang-json">{
-  <span class="hljs-attr">&quot;nomsId&quot;</span>: <span class="hljs-string">&quot;string&quot;</span>,
-  <span class="hljs-attr">&quot;viperRating&quot;</span>: <span class="hljs-string">&quot;number&quot;</span>
+  <span class="hljs-attr">&quot;nomsId&quot;</span>: <span class="hljs-string">&quot;A1234BC&quot;</span>,
+  <span class="hljs-attr">&quot;viperRating&quot;</span>: <span class="hljs-number">0.56</span>
+}
+</code></pre> </div>
+                </section>
+                <section>
+                  <h5>Response Example
+                    <span>(404 Not Found)</span>
+                  </h5>
+                  <div class="hljs"><pre><code class="lang-json">{
+  <span class="hljs-attr">&quot;code&quot;</span>: <span class="hljs-string">&quot;Invalid Argument&quot;</span>,
+  <span class="hljs-attr">&quot;message&quot;</span>: <span class="hljs-string">&quot;Request validation failed: Parameter (nomsId) does not match required pattern: [A-Z]\\d{4}[A-Z]{2}&quot;</span>
 }
 </code></pre> </div>
                 </section>
@@ -169,8 +193,8 @@
                     <span>(500 Internal Server Error)</span>
                   </h5>
                   <div class="hljs"><pre><code class="lang-json">{
-  <span class="hljs-attr">&quot;code&quot;</span>: <span class="hljs-string">&quot;string&quot;</span>,
-  <span class="hljs-attr">&quot;message&quot;</span>: <span class="hljs-string">&quot;string&quot;</span>
+  <span class="hljs-attr">&quot;code&quot;</span>: <span class="hljs-string">&quot;Invalid Argument&quot;</span>,
+  <span class="hljs-attr">&quot;message&quot;</span>: <span class="hljs-string">&quot;Request validation failed: Parameter (nomsId) does not match required pattern: [A-Z]\\d{4}[A-Z]{2}&quot;</span>
 }
 </code></pre> </div>
                 </section>
@@ -215,8 +239,8 @@
                 <section>
                   <h5>Example</h5>
                   <div class="hljs"><pre><code class="lang-json">{
-  <span class="hljs-attr">&quot;nomsId&quot;</span>: <span class="hljs-string">&quot;string&quot;</span>,
-  <span class="hljs-attr">&quot;viperRating&quot;</span>: <span class="hljs-string">&quot;number&quot;</span>
+  <span class="hljs-attr">&quot;nomsId&quot;</span>: <span class="hljs-string">&quot;A1234BC&quot;</span>,
+  <span class="hljs-attr">&quot;viperRating&quot;</span>: <span class="hljs-number">0.56</span>
 }
 </code></pre> </div>
                 </section>
@@ -259,8 +283,8 @@
                 <section>
                   <h5>Example</h5>
                   <div class="hljs"><pre><code class="lang-json">{
-  <span class="hljs-attr">&quot;code&quot;</span>: <span class="hljs-string">&quot;string&quot;</span>,
-  <span class="hljs-attr">&quot;message&quot;</span>: <span class="hljs-string">&quot;string&quot;</span>
+  <span class="hljs-attr">&quot;code&quot;</span>: <span class="hljs-string">&quot;Invalid Argument&quot;</span>,
+  <span class="hljs-attr">&quot;message&quot;</span>: <span class="hljs-string">&quot;Request validation failed: Parameter (nomsId) does not match required pattern: [A-Z]\\d{4}[A-Z]{2}&quot;</span>
 }
 </code></pre> </div>
                 </section>
