@@ -8,6 +8,9 @@ const asJson = (res, obj) =>
 const withParam = (req, key) =>
   (req.swagger.params[key] && req.swagger.params[key].value);
 
+const withBody = (req, key) =>
+  (req.swagger.params.body && req.swagger.params.body.value && req.swagger.params.body.value[key]);
+
 const successfulViperRating = (nomsId, viperRating) =>
   ({
     nomsId: nomsId,
@@ -37,7 +40,7 @@ module.exports.retrieveViperRating = (req, res, next) => {
 
 module.exports.recordViperRating = (req, res, next) => {
   var nomsId = withParam(req, 'nomsId');
-  var viperRating = withParam(req, 'viperRating');
+  var viperRating = withBody(req, 'viperRating');
 
   if (!nomsId) {
     return next(new restify.InvalidArgumentError('nomsId is required'));
@@ -49,7 +52,7 @@ module.exports.recordViperRating = (req, res, next) => {
 
   cache[nomsId] = viperRating;
 
-  asJson(res, successfulViperRating(nomsId, viperRating));
+  res.send(201);
 
   next();
 };
