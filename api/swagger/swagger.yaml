@@ -10,6 +10,9 @@
     - "http"
     - "https"
   paths:
+    /api-docs:
+      x-swagger-pipe: swagger_raw
+
     /offender/{nomsId}/viper:
       parameters:
         - name: "nomsId"
