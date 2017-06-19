@@ -52,6 +52,11 @@ module.exports = (config, ready) => {
   var server = createServer(config);
   server = setupMiddleware(server);
   server = setupAuth(server);
+  // Intercept request and glue the config to it for use elsewhere
+  server.use((req, resp, next) => {
+    req.config = config
+    next()
+  })
 
   SwaggerRestify.create(swaggerConfig, (err, swaggerRestify) => {
     if (err) {
@@ -62,7 +67,7 @@ module.exports = (config, ready) => {
     swaggerRestify.register(server);
 
     server.use((req, res, next) => {
-      server.confog.log.info('error caught');
+      server.config.log.info('error caught');
 
       next();
     });

@@ -10,7 +10,9 @@ describe('api', () => {
 
         it('should return a 200 response when the nomsId is valid', (done) => {
 
-          app({}, (server) =>
+          const mockDb = { exec: function (sql, cb) { cb(null, [{SCORE:0.23}]) }}
+
+          app({db: mockDb}, (server) =>
             request(server)
               .get('/offender/A1234BC/viper')
               .set('Accept', 'application/json')

@@ -1,5 +1,5 @@
 const restify = require('restify');
-
+const reader = require('../datasources/reader');
 const cache = {};
 
 const asJson = (res, obj) =>
@@ -17,25 +17,30 @@ const successfulViperRating = (nomsId, viperRating) =>
     viperRating: 1 * viperRating,
   });
 
-const retrieveViperRating = (nomsId) => {
-  switch (nomsId) {
-    case 'A1234BC': return 0.56;
-    case 'C4321BA': return;
-    default:        return (cache[nomsId] = cache[nomsId] || Math.random().toFixed(2));
-  }
+const retrieveViperRating = (nomsId, db, cb) => {
+  reader.read(nomsId, db, cb);
+  // switch (nomsId) {
+  //   case 'A1234BC': cb(0.56);
+  //   case 'C4321BA': cb();
+  //   case 'A3163JU': reader.read(nomsId, db, cb); break
+  //   default:        cb (cache[nomsId] = cache[nomsId] || Math.random().toFixed(2));
+  // }
 };
 
 module.exports.retrieveViperRating = (req, res, next) => {
-  var nomsId = withParam(req, 'nomsId');
-  var viperRating = retrieveViperRating(nomsId);
+  console.log(req);
 
-  if (!viperRating) {
-    return next(new restify.ResourceNotFoundError(`/offender/${nomsId}/viper does not exist`));
+  function cb(viperRating) {
+    if (!viperRating) {
+      return next(new restify.ResourceNotFoundError(`/offender/${nomsId}/viper does not exist`));
+    }
+    asJson(res, successfulViperRating(nomsId, viperRating));
+    next();
   }
 
-  asJson(res, successfulViperRating(nomsId, viperRating));
+  var nomsId = withParam(req, 'nomsId');
+  retrieveViperRating(nomsId, req.config.db, cb);
 
-  next();
 };
 
 module.exports.recordViperRating = (req, res, next) => {

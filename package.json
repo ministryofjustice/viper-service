@@ -24,7 +24,8 @@
     "require-sql": "1.0.0",
     "restify": "4.3.0",
     "swagger-restify-mw": "0.1.0",
-    "tedious": "2.0.0"
+    "tedious": "2.0.0",
+    "underscore": "^1.8.3"
   },
   "devDependencies": {
     "chai": "3.5.0",

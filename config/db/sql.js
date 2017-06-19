@@ -45,7 +45,8 @@ module.exports = {
             encrypt: true,
             database: config.database,
             useColumnNames: true,
-            rowCollectionOnRequestCompletion: true
+            rowCollectionOnRequestCompletion: true,
+            port: config.port
         }
     });
 
