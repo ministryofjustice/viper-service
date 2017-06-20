@@ -19,7 +19,7 @@ module.exports = (cb) => {
     version: pkg.version,
     description: pkg.description,
     env: env.ENV || 'development',
-    dbConn: JSON.parse(env.DB_CONN),
+    dbConn: env.DB_CONN ? Json.parse(env.DB_CONN) : null,
     buildDate: env.BUILD_DATE,
     commitId: env.COMMIT_ID,
     buildTag: env.BUILD_TAG,
