@@ -30,7 +30,7 @@ module.exports.retrieveViperRating = (req, res, next) => {
       }
     },
 
-    (err) => {throw err})
+    (err) => next(err))
 }
 
 module.exports.recordViperRating = (req, res, next) => {
