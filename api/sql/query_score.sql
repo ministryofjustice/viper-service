@@ -4,3 +4,5 @@ FROM
   SCORES
 WHERE
   NOMIS_ID = '<%- nomis_id %>'
+ORDER BY
+  SINCE DESC
