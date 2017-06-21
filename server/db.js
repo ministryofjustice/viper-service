@@ -8,8 +8,7 @@ function Connection (connection) {
 
       var request = new tedious.Request(sql, function(err) {
         if (err) {
-          console.error(err);
-          return;
+          return done(err);
         }
 
         done(null, rows);
@@ -35,19 +34,19 @@ function Connection (connection) {
   };
 }
 
-module.exports = {
+const dbClient = {
   connect (config, done) {
     var connector = new tedious.Connection({
-        userName: config.username,
-        password: config.password,
-        server: config.server,
-        options: {
-            encrypt: true,
-            database: config.database,
-            useColumnNames: true,
-            rowCollectionOnRequestCompletion: true,
-            port: config.port
-        }
+      userName: config.username,
+      password: config.password,
+      server: config.server,
+      options: {
+        encrypt: true,
+        database: config.database,
+        useColumnNames: true,
+        rowCollectionOnRequestCompletion: true,
+        port: config.port
+      }
     });
 
     connector.on('connect', (err) => {
@@ -55,7 +54,21 @@ module.exports = {
         return done(err);
       }
 
-      done(null, new Connection(connector));
+      return done(null, new Connection(connector));
     });
   },
+};
+
+module.exports = (dbConfig, callback) => {
+  if (!dbConfig) {
+    return callback(null, { exec: function (sql, cb) { cb(null, [{SCORE:0.56}]) }});
+  }
+
+  dbClient.connect(dbConfig, (err, db) => {
+    if (err) {
+      return callback(err);
+    }
+
+    return callback(null, db);
+  });
 };

@@ -18,7 +18,7 @@ module.exports.retrieveViperRating = (req, res, next) => {
 
   var nomsId = withParam(req, 'nomsId')
 
-  reader.read(nomsId, req.config.db).then(
+  reader.read(nomsId, req.db).then(
 
     (viperRating) => {
 

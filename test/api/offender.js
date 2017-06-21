@@ -1,7 +1,12 @@
 const should = require('chai').should();
 const request = require('supertest');
-const app = require('../../app.js');
-const devEnv = require('../../config/environments/development.js');
+const sinon = require('sinon');
+
+const app = require('../../server/app');
+
+const config = require('../../server/config');
+const log = require('../../server/log');
+const db = { exec: sinon.stub().yields(null, [{SCORE:0.56}]) };
 
 describe('api', () => {
 
@@ -11,13 +16,8 @@ describe('api', () => {
 
         it('should return a 200 response when the nomsId is valid', (done) => {
 
-          var testConfig;
-          function cb(config) {
-            testConfig = config;
-          }
-
-          devEnv({}, cb)
-          app(testConfig, (server) =>
+          app(config, log, db, (err, server) => {
+            if (err) return done(err);
             request(server)
               .get('/offender/A1234BC/viper')
               .set('Accept', 'application/json')
@@ -29,15 +29,18 @@ describe('api', () => {
                 res.body.should.have.property('nomsId', 'A1234BC');
                 res.body.should.have.property('viperRating');
 
+                db.exec.callCount.should.eql(1);
+
                 done();
               })
-            );
+            });
 
         });
 
         it('should return a 500 response when the nomsId is a plain string', (done) => {
 
-          app({}, (server) =>
+          app(config, log, db, (err, server) => {
+            if (err) return done(err);
             request(server)
               .get('/offender/BANG/viper')
               .set('Accept', 'application/json')
@@ -51,12 +54,13 @@ describe('api', () => {
 
                 done();
               })
-            );
+            });
         });
 
         it('should return a 500 response when the nomsId is missing a digit', (done) => {
 
-          app({}, (server) =>
+          app(config, log, db, (err, server) => {
+            if (err) return done(err);
             request(server)
               .get('/offender/A123BC/viper')
               .set('Accept', 'application/json')
@@ -70,7 +74,7 @@ describe('api', () => {
 
                 done();
               })
-            );
+            });
 
         });
 
