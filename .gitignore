@@ -12,3 +12,7 @@ npm-debug.log
 
 .DS_Store
 .temp
+
+/.idea
+
+*.iml

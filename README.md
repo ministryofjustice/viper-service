@@ -31,6 +31,11 @@ If you have all the Pre-requisites then you are ready to run the service. Call t
 $ npm start
 ```
 
+### Pointing the app to a real database
+Supply a command line environment variable thusly:
+DB_CONN={"username":"viper","password":"<viper_password>","server":"localhost","port":"1433","database":"viper"}
+
+
 ### Running the server with raw logs
 If you wish to have the output in raw JSON, then you can run the server without piping it through bunyan's formatter. Call the following from your shell;
 

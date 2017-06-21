@@ -1,36 +1,25 @@
+const path = require('path');
+
 const restify = require('restify');
 const SwaggerRestify = require('swagger-restify-mw');
-const setupAuth = require('./api/helpers/auth.js');
+const setupAuth = require('../api/helpers/auth.js');
 
 var swaggerConfig = {
-  appRoot: __dirname // required config
+  appRoot: path.resolve(__dirname, '..')
 };
 
-const getServerOptions = (config) => {
+const getServerOptions = (config, log) => {
   var options = {
-    //certificate: fs.readFileSync('path/to/server/certificate'),
-    //key: fs.readFileSync('path/to/server/key'),
     name: config.name,
-    //spdy: {},
     version: config.version,
+    log,
   };
-
-  if (config.log) {
-    options.log = config.log;
-  }
 
   return options;
 };
 
-const createServer = (config) => {
-  var server = restify.createServer(getServerOptions(config));
-
-  server.config = config;
-  if (config.db) {
-    server.db = config.db;
-  }
-
-  return server;
+const createServer = (config, log) => {
+  return restify.createServer(getServerOptions(config, log));
 };
 
 const setupMiddleware = (server) => {
@@ -48,10 +37,15 @@ const setupMiddleware = (server) => {
   return server;
 };
 
-module.exports = (config, ready) => {
-  var server = createServer(config);
+module.exports = (config, log, db, callback) => {
+  var server = createServer(config, log);
   server = setupMiddleware(server);
-  server = setupAuth(server);
+  server = setupAuth(server, config.auth, log);
+
+  server.use((req, resp, next) => {
+    req.db = db
+    next()
+  })
 
   SwaggerRestify.create(swaggerConfig, (err, swaggerRestify) => {
     if (err) {
@@ -61,12 +55,6 @@ module.exports = (config, ready) => {
     // install middleware
     swaggerRestify.register(server);
 
-    server.use((req, res, next) => {
-      server.confog.log.info('error caught');
-
-      next();
-    });
-
-    ready(server);
+    callback(null, server);
   });
 };
