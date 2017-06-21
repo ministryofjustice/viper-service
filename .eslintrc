@@ -4,6 +4,7 @@
   },
 
   "rules": {
+    "no-undef":                   "error",
     "block-scoped-var":           2,
     "brace-style":              [ 2, "1tbs" ],
     "camelcase":                  1,
