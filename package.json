@@ -4,7 +4,7 @@
   "version": "0.0.1",
   "private": true,
   "author": "Matt Smith <mattonfoot@gmail.com> (http://about.me/mattonfoot)",
-  "license": "GPL-3.0",
+  "license": "MIT",
   "engines": {
     "npm": "3.10.10",
     "node": "6.10.0"
