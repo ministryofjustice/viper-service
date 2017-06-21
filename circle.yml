@@ -18,7 +18,7 @@ deployment:
   mock:
     branch: master
     commands:
-      - echo "TODO: build stuff" | tee temp.txt
+      - 'echo "TODO: build stuff" | tee temp.txt'
       - git add --force --verbose temp.txt
       - git config user.name "Circle CI"
       - git config user.email "circle@circleci.com"
