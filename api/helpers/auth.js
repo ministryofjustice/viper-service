@@ -8,7 +8,7 @@ const getAuthDetails = (req) => {
 };
 
 const isAuthorised = (config, auth) =>
-  (!auth || auth.username !== config.user || auth.password !== config.pass);
+  (auth && auth.username === config.user && auth.password === config.pass);
 
 module.exports = (server, config, log) => {
   if (config.user && config.pass) {
