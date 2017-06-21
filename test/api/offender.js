@@ -1,6 +1,7 @@
 const should = require('chai').should();
 const request = require('supertest');
 const app = require('../../app.js');
+const devEnv = require('../../config/environments/development.js');
 
 describe('api', () => {
 
@@ -10,9 +11,13 @@ describe('api', () => {
 
         it('should return a 200 response when the nomsId is valid', (done) => {
 
-          const mockDb = { exec: function (sql, cb) { cb(null, [{SCORE:0.23}]) }}
+          var testConfig;
+          function cb(config) {
+            testConfig = config;
+          }
 
-          app({db: mockDb}, (server) =>
+          devEnv({}, cb)
+          app(testConfig, (server) =>
             request(server)
               .get('/offender/A1234BC/viper')
               .set('Accept', 'application/json')

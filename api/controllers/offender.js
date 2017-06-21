@@ -15,7 +15,6 @@ const successfulViperRating = (nomsId, viperRating) =>
   })
 
 module.exports.retrieveViperRating = (req, res, next) => {
-  console.log(req)
 
   var nomsId = withParam(req, 'nomsId')
 
@@ -31,23 +30,4 @@ module.exports.retrieveViperRating = (req, res, next) => {
     },
 
     (err) => next(err))
-}
-
-module.exports.recordViperRating = (req, res, next) => {
-  var nomsId = withParam(req, 'nomsId')
-  var viperRating = withBody(req, 'viperRating')
-
-  if (!nomsId) {
-    return next(new restify.InvalidArgumentError('nomsId is required'))
-  }
-
-  if (!viperRating) {
-    return next(new restify.InvalidArgumentError('viperRating is required'))
-  }
-
-  cache[nomsId] = viperRating
-
-  res.send(201)
-
-  next()
 }

@@ -2,6 +2,7 @@ const dbClient = require('../db/sql');
 
 module.exports = (config, cb) => {
   if (!config.dbConn) {
+    config.db = { exec: function (sql, cb) { cb(null, [{SCORE:0.56}]) }}
     return cb(config);
   }
 

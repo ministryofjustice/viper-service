@@ -51,32 +51,32 @@
           - "VIPER Rating"
         produces:
           - "application/json"
-      post:
-        x-swagger-router-controller: offender
-        operationId: recordViperRating
-        summary: "Record VIPER Rating"
-        description: "Records a single VIPER Rating into the dataset"
-        parameters:
-          - name: body
-            in: body
-            required: false
-            description: VIPER Rating score to be recorded against the provided NOMS Id
-            schema:
-              "$ref": "#/definitions/viperRatingScore"
-        responses:
-          201:
-            description: "Created"
-          500:
-            description: "Invalid NOMS Id"
-            examples:
-              application/json:
-                message: "Request validation failed: Parameter (nomsId) does not match required pattern: [A-Z]\\d{4}[A-Z]{2}"
-            schema:
-              "$ref": "#/definitions/invalidArgumentError"
-        tags:
-          - "VIPER Rating"
-        consumes:
-          - "application/json"
+#      post:
+#        x-swagger-router-controller: offender
+#        operationId: recordViperRating
+#        summary: "Record VIPER Rating"
+#        description: "Records a single VIPER Rating into the dataset"
+#        parameters:
+#          - name: body
+#            in: body
+#            required: false
+#            description: VIPER Rating score to be recorded against the provided NOMS Id
+#            schema:
+#              "$ref": "#/definitions/viperRatingScore"
+#        responses:
+#          201:
+#            description: "Created"
+#          500:
+#            description: "Invalid NOMS Id"
+#            examples:
+#              application/json:
+#                message: "Request validation failed: Parameter (nomsId) does not match required pattern: [A-Z]\\d{4}[A-Z]{2}"
+#            schema:
+#              "$ref": "#/definitions/invalidArgumentError"
+#        tags:
+#          - "VIPER Rating"
+#        consumes:
+#          - "application/json"
   definitions:
     viperRatingResult:
       type: "object"
