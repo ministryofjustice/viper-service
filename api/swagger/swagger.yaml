@@ -19,7 +19,7 @@
           in: "path"
           required: true
           type: "string"
-          pattern: "[A-Z]\\d{4}[A-Z]{2}"
+          pattern: "^[A-Z]\\d{4}[A-Z]{2}$"
           description: "A known NOMS ID"
           x-example: "A1234BC"
       get:

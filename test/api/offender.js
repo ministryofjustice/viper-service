@@ -50,7 +50,7 @@ describe('api', () => {
                 should.not.exist(err);
 
                 //res.body.should.have.property('code', 'InvalidArgument');
-                res.body.should.have.property('message', 'Request validation failed: Parameter (nomsId) does not match required pattern: [A-Z]\\d{4}[A-Z]{2}');
+                res.body.should.have.property('message', 'Request validation failed: Parameter (nomsId) does not match required pattern: ^[A-Z]\\d{4}[A-Z]{2}$');
 
                 done();
               })
@@ -70,7 +70,7 @@ describe('api', () => {
                 should.not.exist(err);
 
                 //res.body.should.have.property('code', 'InvalidArgument');
-                res.body.should.have.property('message', 'Request validation failed: Parameter (nomsId) does not match required pattern: [A-Z]\\d{4}[A-Z]{2}');
+                res.body.should.have.property('message', 'Request validation failed: Parameter (nomsId) does not match required pattern: ^[A-Z]\\d{4}[A-Z]{2}$');
 
                 done();
               })
