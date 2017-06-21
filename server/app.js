@@ -13,6 +13,7 @@ const getServerOptions = (config, log) => {
     name: config.name,
     version: config.version,
     log,
+    handleUncaughtExceptions: false,
   };
 
   return options;
