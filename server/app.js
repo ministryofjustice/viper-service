@@ -43,9 +43,9 @@ module.exports = (config, log, db, callback) => {
   server = setupAuth(server, config.auth, log);
 
   server.use((req, resp, next) => {
-    req.db = db
-    next()
-  })
+    req.db = db;
+    next();
+  });
 
   SwaggerRestify.create(swaggerConfig, (err, swaggerRestify) => {
     if (err) {

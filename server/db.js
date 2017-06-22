@@ -61,7 +61,9 @@ const dbClient = {
 
 module.exports = (dbConfig, callback) => {
   if (!dbConfig) {
-    return callback(null, { exec: function (sql, cb) { cb(null, [{SCORE:0.56}]) }});
+    return callback(null, { exec: function (sql, cb) {
+ cb(null, [{SCORE:0.56}]);
+}});
   }
 
   dbClient.connect(dbConfig, (err, db) => {

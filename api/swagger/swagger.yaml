@@ -12,7 +12,29 @@
   paths:
     /api-docs:
       x-swagger-pipe: swagger_raw
-
+    /health:
+      get:
+        x-swagger-router-controller: health
+        operationId: health
+        summary: "Health Check"
+        description: "Performs a basic application health check"
+        responses:
+          200:
+            description: "Success"
+            examples:
+              application/json:
+                healthy: true
+                checks.db: "ok"
+                uptime: 3688.422,
+                build.buildNumber: "901"
+                build.gitRef: "83e46a38509309220da19afa630b5354c56da39b"
+                version: "0.8.0"
+            schema:
+              "$ref": "#/definitions/healthCheckResult"
+        tags:
+          - "Health check"
+        produces:
+          - "application/json"
     /offender/{nomsId}/viper:
       parameters:
         - name: "nomsId"
@@ -137,3 +159,37 @@
           example: "Resource Not Found"
       required:
         - "message"
+    healthCheckResult:
+      type: "object"
+      properties:
+        healthy:
+          type: "boolean"
+          description: "Are we healthy?"
+          example: true
+        checks:
+          type: "object"
+          properties:
+            db:
+              type: "string"
+              description: "How the db connection is feeling"
+              example: "ok"
+        uptime:
+          type: "number"
+          description: "Server uptime in seconds"
+          example: 3688.422
+
+        build:
+          type: "object"
+          properties:
+            buildNumber:
+              type: "string"
+              description: "CI build number"
+              example: "901"
+            gitRef:
+              type: "string"
+              description: "Git reference"
+              example: "83e46a38509309220da19afa630b5354c56da39b"
+            version:
+              type: "string"
+              description: "Artifact version"
+              example: "0.8.0"

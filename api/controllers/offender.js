@@ -1,22 +1,18 @@
-const restify = require('restify')
-const reader = require('../datasources/reader')
-const cache = {}
+const restify = require('restify');
+const reader = require('../datasources/reader');
 
 const withParam = (req, key) =>
-  (req.swagger.params[key] && req.swagger.params[key].value)
-
-const withBody = (req, key) =>
-  (req.swagger.params.body && req.swagger.params.body.value && req.swagger.params.body.value[key])
+  (req.swagger.params[key] && req.swagger.params[key].value);
 
 const successfulViperRating = (nomsId, viperRating) =>
   ({
     nomsId: nomsId,
     viperRating: 1 * viperRating,
-  })
+  });
 
 module.exports.retrieveViperRating = (req, res, next) => {
 
-  var nomsId = withParam(req, 'nomsId')
+  var nomsId = withParam(req, 'nomsId');
 
   reader.read(nomsId, req.db).then(
 
@@ -29,5 +25,5 @@ module.exports.retrieveViperRating = (req, res, next) => {
       }
     },
 
-    (err) => next(err))
-}
+    (err) => next(err));
+};

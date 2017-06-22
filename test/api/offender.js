@@ -17,7 +17,9 @@ describe('api', () => {
         it('should return a 200 response when the nomsId is valid', (done) => {
 
           app(config, log, db, (err, server) => {
-            if (err) return done(err);
+            if (err) {
+return done(err);
+}
             request(server)
               .get('/offender/A1234BC/viper')
               .set('Accept', 'application/json')
@@ -32,7 +34,7 @@ describe('api', () => {
                 db.exec.callCount.should.eql(1);
 
                 done();
-              })
+              });
             });
 
         });
@@ -40,7 +42,9 @@ describe('api', () => {
         it('should return a 500 response when the nomsId is a plain string', (done) => {
 
           app(config, log, db, (err, server) => {
-            if (err) return done(err);
+            if (err) {
+return done(err);
+}
             request(server)
               .get('/offender/BANG/viper')
               .set('Accept', 'application/json')
@@ -53,14 +57,16 @@ describe('api', () => {
                 res.body.should.have.property('message', 'Request validation failed: Parameter (nomsId) does not match required pattern: ^[A-Z]\\d{4}[A-Z]{2}$');
 
                 done();
-              })
+              });
             });
         });
 
         it('should return a 500 response when the nomsId is missing a digit', (done) => {
 
           app(config, log, db, (err, server) => {
-            if (err) return done(err);
+            if (err) {
+return done(err);
+}
             request(server)
               .get('/offender/A123BC/viper')
               .set('Accept', 'application/json')
@@ -73,7 +79,7 @@ describe('api', () => {
                 res.body.should.have.property('message', 'Request validation failed: Parameter (nomsId) does not match required pattern: ^[A-Z]\\d{4}[A-Z]{2}$');
 
                 done();
-              })
+              });
             });
 
         });
