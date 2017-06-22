@@ -1,76 +1,34 @@
-const tedious = require('tedious');
+const knex = require('knex');
 
-function Connection (connection) {
-  return {
+// Ensure we use same DB setup as migrations
+const dbConfig = require('../knexfile');
 
-    exec (sql, done) {
-      var rows = [];
+module.exports = function createDBConnectionPool(enabled, log) {
+  const db = knex(dbConfig);
 
-      var request = new tedious.Request(sql, function(err) {
-        if (err) {
-          return done(err);
-        }
-
-        done(null, rows);
-      });
-
-      request.on('row', (columns) => {
-        var row = {};
-
-        for (var column in columns) {
-          row[column] = columns[column].value || 'NULL';
-        }
-
-        rows.push(row);
-      });
-
-      connection.execSql(request);
-    },
-
-    close () {
-      connection.close();
-    }
-
-  };
-}
-
-const dbClient = {
-  connect (config, done) {
-    var connector = new tedious.Connection({
-      userName: config.username,
-      password: config.password,
-      server: config.server,
-      options: {
-        encrypt: true,
-        database: config.database,
-        useColumnNames: true,
-        rowCollectionOnRequestCompletion: true,
-        port: config.port
-      }
-    });
-
-    connector.on('connect', (err) => {
-      if (err) {
-        return done(err);
-      }
-
-      return done(null, new Connection(connector));
-    });
-  },
-};
-
-module.exports = (dbConfig, callback) => {
-  if (!dbConfig) {
-    return callback(null, { exec: function (sql, cb) {
- cb(null, [{SCORE:0.56}]);
-}});
+  if (!enabled) {
+    log.warn("Using mocked database");
+    return mockDatabase(db);
   }
 
-  dbClient.connect(dbConfig, (err, db) => {
-    if (err) {
-      return callback(err);
-    }
-
-    return callback(null, db);
-  });
+  return db;
 };
+
+// Pre-canned DB responses
+// this should be ideally removed in favour of more realistic testing
+function mockDatabase(db) {
+  const mockKnex = require('mock-knex');
+  mockKnex.mock(db);
+
+  const tracker = mockKnex.getTracker();
+  tracker.install();
+
+  tracker.on('query', (query) => {
+    if (query.sql.match(/from \[scores\]/)) {
+      return query.response([{score: 0.77}]);
+    }
+    query.reject(new Error('Unmocked query'));
+  });
+
+  return db;
+}

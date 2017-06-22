@@ -48,6 +48,7 @@ module.exports = (config, log, db, callback) => {
     next();
   });
 
+  server.on('after', restify.auditLogger({log}));
   server.on('uncaughtException', function (req, res, route, err) {
     log.warn(err);
     res.send(new restify.InternalError(err, err.message || 'unexpected error'));
