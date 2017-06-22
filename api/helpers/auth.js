@@ -1,6 +1,8 @@
+const restify = require('restify');
+
 const unauthorized = (res) => {
   res.set('WWW-Authenticate', 'Basic realm=Password Required');
-  return new restify.UnauthorizedError('Password Required');
+  res.send(new restify.UnauthorizedError('Password Required'));
 };
 
 const getAuthDetails = (req) => {
@@ -19,7 +21,7 @@ module.exports = (server, config, log) => {
         return unauthorized(res);
       }
       return next();
-    });
+  });
   }
 
   return server;

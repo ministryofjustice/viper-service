@@ -13,6 +13,7 @@ const getServerOptions = (config, log) => {
     name: config.name,
     version: config.version,
     log,
+    handleUncaughtExceptions: false,
   };
 
   return options;
@@ -45,6 +46,11 @@ module.exports = (config, log, db, callback) => {
   server.use((req, resp, next) => {
     req.db = db;
     next();
+  });
+
+  server.on('uncaughtException', function (req, res, route, err) {
+    log.warn(err);
+    res.send(new restify.InternalError(err, err.message || 'unexpected error'));
   });
 
   SwaggerRestify.create(swaggerConfig, (err, swaggerRestify) => {
