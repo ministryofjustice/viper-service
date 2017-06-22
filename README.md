@@ -2,7 +2,7 @@
 A Restful service to provide access to the VIPER Rating for a known ID
 
 ## Swagger documentation
-The swagger documentation can be found on the path ```/dist/?url=/swagger/resources.json```
+The swagger specification can be found on the path ```/api-docs```
 
 ## Running with NodeJS
 Start by ensuring you have the most recent version of NodeJS and NPM installed.
