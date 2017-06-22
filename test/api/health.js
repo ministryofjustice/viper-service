@@ -1,25 +1,29 @@
 const should = require('chai').should();
 const request = require('supertest');
-const sinon = require('sinon');
 
 const app = require('../../server/app');
 
 const config = require('../../server/config');
 const log = require('../../server/log');
+const db = require('../../server/db')(false, log);
+
+const tracker = require('mock-knex').getTracker();
 
 describe('api', () => {
+
+  beforeEach(() => { tracker.uninstall(); tracker.install(); });
 
   describe('/health', () => {
 
     describe('GET /health', () => {
 
       it('should return a 200 response with some content', (done) => {
-        const db = {exec: sinon.stub().yields(null, 1)};
+        tracker.on('query', (q) => {
+          q.response([{'a': 1}]);
+        });
 
         app(config, log, db, (err, server) => {
-          if (err) {
-            return done(err);
-          }
+          if (err) return done(err);
           request(server)
             .get('/health')
             .set('Accept', 'application/json')
@@ -29,7 +33,6 @@ describe('api', () => {
               should.not.exist(err);
 
               res.body.should.have.property('healthy', true);
-              db.exec.callCount.should.eql(1);
 
               done();
             });
@@ -38,12 +41,12 @@ describe('api', () => {
       });
 
       it('should return a 200 response with fail content', (done) => {
+        tracker.on('query', (q) => {
+          q.reject(new Error('Oh dear!'));
+        });
 
-        const db = {exec: sinon.stub().yields('Oh dear', null)};
         app(config, log, db, (err, server) => {
-          if (err) {
-            return done(err);
-          }
+          if (err) return done(err);
           request(server)
             .get('/health')
             .set('Accept', 'application/json')
@@ -53,7 +56,6 @@ describe('api', () => {
               should.not.exist(err);
 
               res.body.should.have.property('healthy', false);
-              db.exec.callCount.should.eql(1);
 
               done();
             });
