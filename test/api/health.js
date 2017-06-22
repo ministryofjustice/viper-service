@@ -1,11 +1,11 @@
-const should = require('chai').should()
-const request = require('supertest')
-const sinon = require('sinon')
+const should = require('chai').should();
+const request = require('supertest');
+const sinon = require('sinon');
 
-const app = require('../../server/app')
+const app = require('../../server/app');
 
-const config = require('../../server/config')
-const log = require('../../server/log')
+const config = require('../../server/config');
+const log = require('../../server/log');
 
 describe('api', () => {
 
@@ -14,11 +14,11 @@ describe('api', () => {
     describe('GET /health', () => {
 
       it('should return a 200 response with some content', (done) => {
-        const db = {exec: sinon.stub().yields(null, 1)}
+        const db = {exec: sinon.stub().yields(null, 1)};
 
         app(config, log, db, (err, server) => {
           if (err) {
-            return done(err)
+            return done(err);
           }
           request(server)
             .get('/health')
@@ -26,23 +26,23 @@ describe('api', () => {
             .expect('Content-Type', /json/)
             .expect(200)
             .end((err, res) => {
-              should.not.exist(err)
+              should.not.exist(err);
 
-              res.body.should.have.property('healthy', true)
-              db.exec.callCount.should.eql(1)
+              res.body.should.have.property('healthy', true);
+              db.exec.callCount.should.eql(1);
 
-              done()
-            })
-        })
+              done();
+            });
+        });
 
-      })
+      });
 
       it('should return a 200 response with fail content', (done) => {
 
-        const db = {exec: sinon.stub().yields('Oh dear', null)}
+        const db = {exec: sinon.stub().yields('Oh dear', null)};
         app(config, log, db, (err, server) => {
           if (err) {
-            return done(err)
+            return done(err);
           }
           request(server)
             .get('/health')
@@ -50,15 +50,15 @@ describe('api', () => {
             .expect('Content-Type', /json/)
             .expect(200)
             .end((err, res) => {
-              should.not.exist(err)
+              should.not.exist(err);
 
-              res.body.should.have.property('healthy', false)
-              db.exec.callCount.should.eql(1)
+              res.body.should.have.property('healthy', false);
+              db.exec.callCount.should.eql(1);
 
-              done()
-            })
-        })
-      })
-    })
-  })
-})
+              done();
+            });
+        });
+      });
+    });
+  });
+});
