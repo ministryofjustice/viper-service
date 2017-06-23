@@ -20,7 +20,7 @@
     "knex": "knex",
     "knex-migrate": "knex-migrate",
     "migrate": "knex-migrate up",
-    "migrate-dry": "knex-migrate pending"
+    "migrate-dry": "knex-migrate pending",
     "record-build-info": "node ./bin/record-build-info",
     "wait-for-deploy": "node ./bin/wait-for-deploy"
   },
