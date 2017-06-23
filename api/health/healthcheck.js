@@ -13,8 +13,8 @@ module.exports = function healthcheck (db) {
     })
     .then(() => {
       results.uptime = process.uptime();
-      results.build = safely(() => require('../build-info.json'));
-      results.version = safely(() => require('../package.json').version);
+      results.build = safely(() => require('../../build-info.json'));
+      results.version = safely(() => require('../../package.json').version);
 
       return results;
     });
