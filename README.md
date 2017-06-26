@@ -2,7 +2,9 @@
 A Restful service to provide access to the VIPER Rating for a known ID
 
 ## Swagger documentation
-The swagger specification can be found on the path ```/api-docs```
+The details of the API  can found in [the online documentation](https://noms-digital-studio.github.io/viper-service/).
+
+The swagger specification can be found on the path ```/api-docs```.
 
 ## Running with NodeJS
 Start by ensuring you have the most recent version of NodeJS and NPM installed.
