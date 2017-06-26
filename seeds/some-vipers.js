@@ -1,5 +1,5 @@
 exports.seed = (knex) =>
-  knex('scores').truncate()
+  knex('scores').del()
     .then(
       () => knex('scores').insert([
         {nomis_id: 'A1234AA', score: 0.21, since: new Date('2017-06-20T11:59')},

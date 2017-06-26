@@ -65,6 +65,14 @@ Other knex commands can be run via
 npm run knex -- <other args>
 ```
 
+#### Seed data
+
+To reset the database back into a known-data state, you can use the seed scripts
+
+```
+npm run seed
+```
+
 #### Local database setup
 
 To run the database locally, use the [docker image](https://hub.docker.com/r/microsoft/mssql-server-linux/).

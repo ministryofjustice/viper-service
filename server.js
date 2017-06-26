@@ -4,7 +4,7 @@ const log = require('./server/log');
 const makeDB = require('./server/db');
 const makeApp = require('./server/app');
 
-const db = makeDB(config.db, log);
+const db = makeDB();
 
 makeApp(config, log, db, (err, server) => {
   if (err) throw err;
