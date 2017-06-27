@@ -1,0 +1,38 @@
+const dbConfig = require('../server/config').db;
+const createDB = require('../server/db');
+
+function getenv(name) {
+  if (name in process.env) {
+    return process.env[name];
+  }
+  throw new Error(`Missing ${name} environment variable`);
+}
+
+const newUserName = getenv('APP_USER');
+const newUserPass = getenv('APP_PASSWORD');
+if (!dbConfig) throw new Error(`Missing DB_URI environment variable`);
+
+const db = createDB({database: "master"});
+const id = db.client.wrapIdentifier;
+let failed = false;
+
+db.schema
+  .raw(`EXEC sp_configure 'contained database authentication', 1`)
+  .raw(`RECONFIGURE WITH OVERRIDE`)
+  .raw(`CREATE DATABASE ${id(dbConfig.database)}
+    CONTAINMENT = PARTIAL COLLATE SQL_Latin1_General_CP1_CI_AS`)
+  .raw(`USE ${id(dbConfig.database)}`)
+  .raw(`CREATE USER ${id(newUserName)} WITH PASSWORD = '${newUserPass}'`)
+  .raw(`GRANT SELECT TO ${id(newUserName)}`)
+  .then(() => {
+    console.log("Setup completed", {
+      user: newUserName, database: dbConfig.database
+    });
+  })
+  .catch((err) => {
+    console.error("Unexpected error", err.message, "\n\n");
+    console.error(`You might need to delete the database ${id(dbConfig.database)} to retry`);
+    failed = true;
+  })
+  .then(() => db.destroy())
+  .then(() => process.exit(failed ? 1 : 0));

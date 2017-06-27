@@ -1,0 +1,75 @@
+version: 2
+
+jobs:
+  build:
+    docker:
+      - image: circleci/node:6
+      - image: microsoft/mssql-server-linux:ctp2-1
+        environment:
+          ACCEPT_EULA: Y
+          SA_PASSWORD: aRubbishPasswordForC1Only
+    working_directory: ~/app
+    branches:
+      ignore:
+        - /deploy-to.*/
+    steps:
+      - run:
+          name: Generate Build version
+          command: |
+            echo "export BUILD_VERSION=$(date +%Y%m%d%H%M)-$CIRCLE_BUILD_NUM" >> $BASH_ENV
+      - checkout
+      - restore_cache:
+          key: node_modules-{{ checksum "package.json" }}
+          key: node_modules
+      - run:
+          name: Install Dependencies
+          command: |
+            npm prune
+            npm install
+      - save_cache:
+          key: node_modules-{{ checksum "package.json" }}
+          paths:
+            - ./node_modules
+      - run:
+          name: Run Unit Tests
+          command: npm run test-report
+          environment:
+            MOCHA_FILE: $CIRCLE_TEST_REPORTS/junit/test-results.xml
+      - store_test_results:
+          path: $CIRCLE_TEST_REPORTS
+      - run:
+          name: Initialise SQL Server
+          command: |
+            npm run setup-mssql
+            npm run knex -- migrate:currentVersion
+            npm run migrate
+            npm run seed
+          environment:
+            DB_URI: mssql://sa:aRubbishPasswordForC1Only@localhost:1433/viper
+            APP_USER: app
+            APP_PASSWORD: aRubbishPasswordForC1Only
+      - run:
+          name: Dredd Tests
+          command: npm run docs-test
+          environment:
+            DB_URI: mssql://app:aRubbishPasswordForC1Only@localhost:1433/viper
+      - deploy:
+          name: Build Derived Git Commit
+          command: |
+            if [ "${CIRCLE_BRANCH}" == "master" ]; then
+              GIT_REF=$CIRCLE_SHA1 BUILD_NUMBER=$CIRCLE_BUILD_NUM \
+                npm run record-build-info
+              git add --force --verbose build-info.json
+              git config user.name "Circle CI"
+              git config user.email "circle@circleci.com"
+              git commit \
+                -m "Deployment of build $CIRCLE_BUILD_NUM" \
+                -m "$(git log --format=%B -n 1 $CIRCLE_SHA1)" \
+                -m "From gitref $CIRCLE_SHA1"
+            fi
+      - deploy:
+          name: Deploy to Dev environment
+          command: |
+            if [ "${CIRCLE_BRANCH}" == "master" ]; then
+              git push --force origin HEAD:deploy-to-dev
+            fi
