@@ -20,7 +20,7 @@
     "setup-mssql": "node ./bin/setup-mssql",
     "knex": "knex",
     "knex-migrate": "knex-migrate",
-    "migrate": "knex-migrate up",
+    "migrate": "knex migrate:latest",
     "migrate-dry": "knex-migrate pending",
     "seed": "knex seed:run",
     "record-build-info": "node ./bin/record-build-info",

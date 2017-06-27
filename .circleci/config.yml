@@ -41,7 +41,6 @@ jobs:
           name: Initialise SQL Server
           command: |
             npm run setup-mssql
-            npm run knex -- migrate:currentVersion
             npm run migrate
             npm run seed
           environment:
