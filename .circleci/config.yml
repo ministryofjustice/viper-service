@@ -71,5 +71,8 @@ jobs:
           name: Deploy to Dev environment
           command: |
             if [ "${CIRCLE_BRANCH}" == "master" ]; then
+              export DB_URI=$DEV_DB_URI
+              npm run knex -- migrate:currentVersion
+              npm run migrate
               git push --force origin HEAD:deploy-to-dev
             fi
