@@ -35,6 +35,9 @@ jobs:
           command: npm run test-report
           environment:
             MOCHA_FILE: build/junit/test-results.xml
+      - run:
+          name: Check swagger.yaml definition
+          command: npm run verify
       - store_test_results:
           path: build
       - run:
