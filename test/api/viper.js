@@ -6,7 +6,7 @@ const config = require('../../server/config');
 const log = require('../../server/log');
 const {db, tracker} = createMockDB();
 
-describe('api /offender', () => {
+describe('api /viper', () => {
   let server;
   before((done) => {
     app(config, log, db, (err, _server) => {
@@ -18,7 +18,7 @@ describe('api /offender', () => {
 
   beforeEach(() => { tracker.uninstall(); tracker.install(); });
 
-  describe('GET /:nomsId/viper', () => {
+  describe('GET /:nomsId', () => {
 
     it('should return a 200 response when the nomsId is valid', () => {
 
@@ -27,7 +27,7 @@ describe('api /offender', () => {
       });
 
       return request(server)
-        .get('/offender/A1234BC/viper')
+        .get('/viper/A1234BC')
         .set('Accept', 'application/json')
         .expect('Content-Type', /json/)
         .expect(200)
@@ -39,7 +39,7 @@ describe('api /offender', () => {
 
     it('should return a 400 response when the nomsId is a plain string', () => {
       return request(server)
-        .get('/offender/BANG/viper')
+        .get('/viper/BANG')
         .set('Accept', 'application/json')
         .expect('Content-Type', /json/)
         .expect(400)
@@ -50,7 +50,7 @@ describe('api /offender', () => {
 
     it('should return a 400 response when the nomsId is missing a digit', () => {
       return request(server)
-        .get('/offender/A123BC/viper')
+        .get('/viper/A123BC')
         .set('Accept', 'application/json')
         .expect('Content-Type', /json/)
         .expect(400)

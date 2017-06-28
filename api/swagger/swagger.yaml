@@ -31,7 +31,7 @@
           - "Health check"
         produces:
           - "application/json"
-    /offender/{nomsId}/viper:
+    /viper/{nomsId}:
       parameters:
         - name: "nomsId"
           in: "path"
