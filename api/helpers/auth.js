@@ -17,6 +17,10 @@ module.exports = (server, config, log) => {
     log.info({user: config.user}, 'Enabling basic auth');
 
     server.use((req, res, next) => {
+      if (req.url === '/health') {
+        return next();
+      }
+
       if (!isAuthorised(config, getAuthDetails(req))) {
         return unauthorized(res);
       }
