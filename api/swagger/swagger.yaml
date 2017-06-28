@@ -4,14 +4,10 @@
     title: "Analytics API"
     version: "0.0.1"
     description: "Provides the ability to query analytics results sets"
-  host: "viper-dev.hmpps.dsd.io"
   basePath: "/"
-  schemes:
-    - "http"
-    - "https"
   paths:
     /api-docs:
-      x-swagger-pipe: swagger_raw
+      x-swagger-pipe: swagger_definition
     /health:
       get:
         x-swagger-router-controller: health

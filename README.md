@@ -49,7 +49,9 @@ This can be left out in dev mode, and any API routes which use the database will
 
 In production the DB connection config is required. The variable should be set like this:
 
-DB_URI=mssql://username:password@server-host:1433/database-name?encrypt=true
+```
+DB_URI=mssql://username:password@server-host:1433/database-name
+```
 
 #### Migrations
 
