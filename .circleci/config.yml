@@ -43,7 +43,7 @@ jobs:
       - run:
           name: Initialise SQL Server
           command: |
-            ./node_modules/.bin/wait-port -t 10000 1433
+            ./node_modules/.bin/wait-port -t 30000 1433
             npm run setup-mssql
             npm run migrate
             npm run seed
