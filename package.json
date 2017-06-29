@@ -33,6 +33,7 @@
     "mssql": "^3.3.0",
     "require-sql": "1.0.0",
     "restify": "^4.3.1",
+    "sleep-promise": "^2.0.0",
     "swagger-restify-mw": "^0.7.0",
     "tedious": "2.0.0"
   },
