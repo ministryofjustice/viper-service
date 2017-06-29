@@ -37,29 +37,25 @@ describe('api /offender', () => {
         });
     });
 
-    it('should return a 500 response when the nomsId is a plain string', () => {
+    it('should return a 400 response when the nomsId is a plain string', () => {
       return request(server)
         .get('/offender/BANG/viper')
         .set('Accept', 'application/json')
         .expect('Content-Type', /json/)
-        .expect(500)
+        .expect(400)
         .then((res) => {
-          //res.body.should.have.property('code', 'InvalidArgument');
-          res.body.should.have.property('message',
-            'Request validation failed: Parameter (nomsId) does not match required pattern: ^[A-Z]\\d{4}[A-Z]{2}$');
+          res.body.should.have.property('message', "Validation errors");
         });
     });
 
-    it('should return a 500 response when the nomsId is missing a digit', () => {
+    it('should return a 400 response when the nomsId is missing a digit', () => {
       return request(server)
         .get('/offender/A123BC/viper')
         .set('Accept', 'application/json')
         .expect('Content-Type', /json/)
-        .expect(500)
+        .expect(400)
         .then((res) => {
-          //res.body.should.have.property('code', 'InvalidArgument');
-          res.body.should.have.property('message',
-            'Request validation failed: Parameter (nomsId) does not match required pattern: ^[A-Z]\\d{4}[A-Z]{2}$');
+          res.body.should.have.property('message', "Validation errors");
         });
 
     });
