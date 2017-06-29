@@ -1,3 +1,6 @@
+#!/usr/bin/env node
+const sleep = require('sleep-promise');
+
 const dbConfig = require('../server/config').db;
 const createDB = require('../server/db');
 
@@ -8,6 +11,9 @@ function getenv(name) {
   throw new Error(`Missing ${name} environment variable`);
 }
 
+const CHECK_WAIT_TIMEOUT = 1000;
+const CHECK_MAX_TIME = 60 * 1000;
+
 const newUserName = getenv('APP_USER');
 const newUserPass = getenv('APP_PASSWORD');
 if (!dbConfig) throw new Error(`Missing DB_URI environment variable`);
@@ -16,23 +22,46 @@ const db = createDB({database: "master"});
 const id = db.client.wrapIdentifier;
 let failed = false;
 
-db.schema
-  .raw(`EXEC sp_configure 'contained database authentication', 1`)
-  .raw(`RECONFIGURE WITH OVERRIDE`)
-  .raw(`CREATE DATABASE ${id(dbConfig.database)}
-    CONTAINMENT = PARTIAL COLLATE SQL_Latin1_General_CP1_CI_AS`)
-  .raw(`USE ${id(dbConfig.database)}`)
-  .raw(`CREATE USER ${id(newUserName)} WITH PASSWORD = '${newUserPass}'`)
-  .raw(`GRANT SELECT TO ${id(newUserName)}`)
-  .then(() => {
-    console.log("Setup completed", {
-      user: newUserName, database: dbConfig.database
+const checkDBConnection = () => {
+  const startedTrying = Date.now();
+  const repeatedBit = () =>
+    db.raw("SELECT 1").timeout(CHECK_WAIT_TIMEOUT)
+    .catch((err) => {
+      console.warn("Connection failing, retrying...");
+      if (Date.now() - startedTrying >= CHECK_MAX_TIME) {
+        throw err;
+      }
+      return sleep(CHECK_WAIT_TIMEOUT).then(repeatedBit);
     });
-  })
+
+  return repeatedBit()
+    .catch((err) => {
+      console.error("Failed to connect to DB", err);
+      failed = true;
+    });
+};
+
+const doSetup = () =>
+  db.schema
+    .raw(`EXEC sp_configure 'contained database authentication', 1`)
+    .raw(`RECONFIGURE WITH OVERRIDE`)
+    .raw(`CREATE DATABASE ${id(dbConfig.database)}
+      CONTAINMENT = PARTIAL COLLATE SQL_Latin1_General_CP1_CI_AS`)
+    .raw(`USE ${id(dbConfig.database)}`)
+    .raw(`CREATE USER ${id(newUserName)} WITH PASSWORD = '${newUserPass}'`)
+    .raw(`GRANT SELECT TO ${id(newUserName)}`)
+    .then(() => {
+      console.log("Setup completed", {
+        user: newUserName, database: dbConfig.database
+      });
+    })
   .catch((err) => {
     console.error("Unexpected error", err.message, "\n\n");
     console.error(`You might need to delete the database ${id(dbConfig.database)} to retry`);
     failed = true;
-  })
+  });
+
+checkDBConnection()
+  .then(() => doSetup())
   .then(() => db.destroy())
   .then(() => process.exit(failed ? 1 : 0));
