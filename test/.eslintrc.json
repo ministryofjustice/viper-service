@@ -3,6 +3,7 @@
         "mocha": true
     },
     "globals": {
-        "createMockDB": true
+        "createMockDB": true,
+        "createRealDB": true
     }
 }
