@@ -35,6 +35,17 @@ const setupMiddleware = (server) => {
   // fix for known curl issue
   server.pre(restify.pre.userAgentConnection());
 
+  // trust HTTPs proxy headers
+  // including azure's http://stackoverflow.com/a/18455265/173062
+  server.pre((req, res, next) => {
+    if (req.headers['x-arr-ssl']
+      || req.headers['x-forwarded-proto'] === 'https'
+    ) {
+      req._secure = true;
+    }
+    next();
+  });
+
   return server;
 };
 

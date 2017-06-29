@@ -49,7 +49,9 @@ This can be left out in dev mode, and any API routes which use the database will
 
 In production the DB connection config is required. The variable should be set like this:
 
-DB_URI=mssql://username:password@server-host:1433/database-name?encrypt=true
+```
+DB_URI=mssql://username:password@server-host:1433/database-name
+```
 
 #### Migrations
 
@@ -65,6 +67,14 @@ Other knex commands can be run via
 npm run knex -- <other args>
 ```
 
+#### Seed data
+
+To reset the database back into a known-data state, you can use the seed scripts
+
+```
+npm run seed
+```
+
 #### Local database setup
 
 To run the database locally, use the [docker image](https://hub.docker.com/r/microsoft/mssql-server-linux/).
@@ -75,27 +85,22 @@ docker run -e 'ACCEPT_EULA=Y' -e 'SA_PASSWORD=<password>' -p 1433:1433 -d micros
 
 After you have a database, you'll need to create the database and application user. On real environments this is handled by the terraform code.
 ```
-npm install -g sql-cli
-mssql -s localhost -u sa -p <password>
-USE master;
-EXEC sp_configure 'contained database authentication', 1;
-RECONFIGURE WITH OVERRIDE;
-CREATE DATABASE aap CONTAINMENT = PARTIAL COLLATE SQL_Latin1_General_CP1_CI_AS;
-USE aap;
-CREATE USER <database-user> WITH PASSWORD = '<database-user-password>';
-.quit
+export DB_URI=mssql://sa:<password>@localhost:1433/<database-name>
+DB_USER=<database-user> DB_PASSWORD=<database-user-password> npm run setup-mssql
 ```
 
-And then run the migrations as with any other environment.
+And then run the migrations & seeds as with any other environment.
 ```
 npm run knex -- migrate:currentVersion
 npm run migrate
+npm run seed
 ```
 
 #### Local database manual querying
 
-The `sql-cli` package installed above gives you a commandline client called `mssql`.
+The `sql-cli` package on npm gives you a commandline client called `mssql`.
 
 ```
-mssql -s localhost -u <database-user> -p <password> -d aap
+npm install -g sql-cli
+mssql -s localhost -u <database-user> -p <database-user-password> -d <database-name>
 ```

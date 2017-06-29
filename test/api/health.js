@@ -1,66 +1,53 @@
-const should = require('chai').should();
 const request = require('supertest');
 
 const app = require('../../server/app');
 
 const config = require('../../server/config');
 const log = require('../../server/log');
-const db = require('../../server/db')(false, log);
+const {db, tracker} = createMockDB();
 
-const tracker = require('mock-knex').getTracker();
-
-describe('api', () => {
+describe('api /health', () => {
+  let server;
+  before((done) => {
+    app(config, log, db, (err, _server) => {
+      if (err) return done(err);
+      server = _server;
+      done();
+    });
+  });
 
   beforeEach(() => { tracker.uninstall(); tracker.install(); });
 
-  describe('/health', () => {
+  describe('GET /health', () => {
 
-    describe('GET /health', () => {
-
-      it('should return a 200 response with some content', (done) => {
-        tracker.on('query', (q) => {
-          q.response([{'a': 1}]);
-        });
-
-        app(config, log, db, (err, server) => {
-          if (err) return done(err);
-          request(server)
-            .get('/health')
-            .set('Accept', 'application/json')
-            .expect('Content-Type', /json/)
-            .expect(200)
-            .end((err, res) => {
-              should.not.exist(err);
-
-              res.body.should.have.property('healthy', true);
-
-              done();
-            });
-        });
-
+    it('should return a 200 response with some content', () => {
+      tracker.on('query', (q) => {
+        q.response([{'a': 1}]);
       });
 
-      it('should return a 200 response with fail content', (done) => {
-        tracker.on('query', (q) => {
-          q.reject(new Error('Oh dear!'));
+      return request(server)
+        .get('/health')
+        .set('Accept', 'application/json')
+        .expect('Content-Type', /json/)
+        .expect(200)
+        .then((res) => {
+          res.body.should.have.property('healthy', true);
         });
+    });
 
-        app(config, log, db, (err, server) => {
-          if (err) return done(err);
-          request(server)
-            .get('/health')
-            .set('Accept', 'application/json')
-            .expect('Content-Type', /json/)
-            .expect(200)
-            .end((err, res) => {
-              should.not.exist(err);
-
-              res.body.should.have.property('healthy', false);
-
-              done();
-            });
-        });
+    it('should return a 200 response with fail content', () => {
+      tracker.on('query', (q) => {
+        q.reject(new Error('Oh dear!'));
       });
+
+      return request(server)
+        .get('/health')
+        .set('Accept', 'application/json')
+        .expect('Content-Type', /json/)
+        .expect(200)
+        .then((res) => {
+          res.body.should.have.property('healthy', false);
+        });
     });
   });
 });
