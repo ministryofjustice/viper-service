@@ -1,17 +1,5 @@
-require('require-sql');
-
-const ingestSql = require('./sql/ingest');
+const ingestSql = require('fs').readFileSync(require.resolve('./sql/ingest.sql'), 'utf8');
 
 module.exports.ingest = (db) => {
-  return new Promise((resolve, reject) => {
-    try {
-      db
-        .raw(ingestSql)
-        .then((resp) => {
-          resolve(resp);
-        });
-    } catch (err) {
-      reject(err);
-    }
-  });
+  return db.raw(ingestSql);
 };
