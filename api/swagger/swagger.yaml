@@ -72,6 +72,15 @@
           - "VIPER Rating"
         produces:
           - "application/json"
+    /ingest:
+      post:
+        summary: "Ingest data from staging"
+        description: "Performs the data migration from the staging table into the source of truth"
+        responses:
+          202:
+            description: "The request to perform the migration has been accepted"
+        tags:
+          - "Data ingest"
   definitions:
     viperRatingResult:
       type: "object"

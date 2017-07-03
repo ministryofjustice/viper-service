@@ -3,6 +3,7 @@ const path = require('path');
 const restify = require('restify');
 const SwaggerRestify = require('swagger-restify-mw');
 const setupAuth = require('../api/helpers/auth.js');
+const ingestController = require('../api/controllers/ingesterController');
 
 var swaggerConfig = {
   appRoot: path.resolve(__dirname, '..')
@@ -49,6 +50,11 @@ const setupMiddleware = (server) => {
   return server;
 };
 
+const addEndpoints = (server) => {
+  server.post('/ingest', ingestController.doIngest);
+  return server;
+};
+
 module.exports = (config, log, db, callback) => {
   var server = createServer(config, log);
   server = setupMiddleware(server);
@@ -58,6 +64,8 @@ module.exports = (config, log, db, callback) => {
     req.db = db;
     next();
   });
+
+  server = addEndpoints(server);
 
   server.on('after', restify.auditLogger({log}));
   server.on('uncaughtException', function (req, res, route, err) {
