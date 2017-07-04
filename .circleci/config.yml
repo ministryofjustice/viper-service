@@ -53,7 +53,9 @@ jobs:
           path: build
       - run:
           name: Dredd Tests
-          command: npm run docs-test
+          command:
+            npm run seed
+            npm run docs-test
           environment:
             DB_URI: mssql://app:aRubbishPasswordForC1Only@localhost:1433/viper
       - deploy:
