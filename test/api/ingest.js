@@ -8,6 +8,7 @@ const sinon = require('sinon');
 
 describe('api /ingest', () => {
   let server;
+  let sandbox;
 
   before((done) => {
 
@@ -21,6 +22,13 @@ describe('api /ingest', () => {
   beforeEach(() => {
     tracker.uninstall();
     tracker.install();
+
+    sandbox = sinon.sandbox.create();
+
+  });
+
+  afterEach(() => {
+    sandbox.restore();
   });
 
   describe('POST /ingest', () => {
@@ -33,8 +41,7 @@ describe('api /ingest', () => {
 
     it('should invoke the ingester', () => {
 
-      sinon.spy(ingester, "ingest");
-      // tracker.on('raw', (query) => { query.response([]);});
+      sandbox.stub(ingester, "ingest").returns(Promise.resolve([]));
 
       return request(server)
         .post('/ingest').then(() => {
@@ -42,5 +49,13 @@ describe('api /ingest', () => {
         });
     });
 
+    it('should return 202 even if the database activity does not complete', () => {
+
+      sandbox.stub(ingester, "ingest").returns(new Promise(() => {}));
+
+      return request(server)
+        .post('/ingest')
+        .expect(202);
+    });
   });
 });
