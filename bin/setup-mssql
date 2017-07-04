@@ -27,7 +27,7 @@ const checkDBConnection = () => {
   const repeatedBit = () =>
     db.raw("SELECT 1").timeout(CHECK_WAIT_TIMEOUT)
     .catch((err) => {
-      console.warn("Connection failing, retrying...");
+      console.warn("%s: Connection failing %s, retrying...", new Date().toISOString(), err.message);
       if (Date.now() - startedTrying >= CHECK_MAX_TIME) {
         throw err;
       }
