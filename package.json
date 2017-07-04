@@ -39,6 +39,7 @@
   },
   "devDependencies": {
     "chai": "^4.0.2",
+    "date-fns": "^1.28.5",
     "dredd": "^4.1.1",
     "knex-migrate": "^1.3.0",
     "mocha": "^3.4.2",
