@@ -80,18 +80,22 @@ context('with a database', () => {
 
   it('should migrate only the latest data from staging', () => {
 
+    let now = new Date();
+    let later = new Date(now);
+    later.setMinutes(now.getMinutes() + 1)
+
     return Promise.all([
       knex('staging').truncate(),
       knex('scores').truncate()
     ])
       .then(() =>
         knex('staging').insert([
-          {nomis_id: 'A1234AA', score: 0.01}
+          {nomis_id: 'A1234AA', score: 0.01, uploaded: now}
         ])
       )
       .then(() =>
         knex('staging').insert([
-          {nomis_id: 'A1234AA', score: 0.99}
+          {nomis_id: 'A1234AA', score: 0.99, uploaded: later}
         ])
       )
       .then(() => ingester.ingest(knex))
