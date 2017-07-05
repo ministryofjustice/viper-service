@@ -35,7 +35,6 @@ jobs:
           command: |
             npm run setup-mssql
             npm run migrate
-            npm run seed
           environment:
             DB_URI: mssql://sa:aRubbishPasswordForC1Only@localhost:1433/viper
             APP_USER: app
@@ -52,7 +51,7 @@ jobs:
       - store_test_results:
           path: build
       - run:
-          name: Re-seed database
+          name: Seed database
           command: npm run seed
           environment:
             DB_URI: mssql://sa:aRubbishPasswordForC1Only@localhost:1433/viper
