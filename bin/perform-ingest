@@ -6,8 +6,12 @@ const log = require('../server/log');
 
 
 log.info("Performing ingest by script..");
+let exitCode = 0;
 ingester.ingest(createDb())
     .then(() => log.info("done."))
-    .catch((err) => log.err(err))
-    .then(() => process.exit());
+    .catch((err) => {
+      log.error(err);
+      exitCode = 1;
+    })
+    .then(() => process.exit(exitCode));
 
