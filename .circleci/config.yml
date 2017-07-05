@@ -55,8 +55,6 @@ jobs:
           command: npm run seed
           environment:
             DB_URI: mssql://sa:aRubbishPasswordForC1Only@localhost:1433/viper
-            APP_USER: app
-            APP_PASSWORD: aRubbishPasswordForC1Only
       - run:
           name: Dredd Tests
           command:
@@ -84,5 +82,6 @@ jobs:
               export DB_URI=$DEV_DB_URI
               npm run knex -- migrate:currentVersion
               npm run migrate
+              npm run seed
               git push --force origin HEAD:deploy-to-dev
             fi
