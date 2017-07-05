@@ -21,7 +21,7 @@ module.exports.retrieveViperRating = (req, res, next) => {
       if (viperRating) {
         res.send(successfulViperRating(nomsId, viperRating));
       } else {
-        next(new restify.ResourceNotFoundError(`/offender/${nomsId}/viper does not exist`));
+        next(new restify.ResourceNotFoundError(`viper does not exist`));
       }
     },
 

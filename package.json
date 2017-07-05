@@ -24,7 +24,8 @@
     "migrate-dry": "knex-migrate pending",
     "seed": "knex seed:run",
     "record-build-info": "node ./bin/record-build-info",
-    "wait-for-deploy": "node ./bin/wait-for-deploy"
+    "wait-for-deploy": "node ./bin/wait-for-deploy",
+    "perform-ingest": "./bin/perform-ingest"
   },
   "dependencies": {
     "bunyan": "1.8.10",
