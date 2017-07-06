@@ -12,7 +12,7 @@ function getenv(name) {
 }
 
 const CHECK_WAIT_TIMEOUT = 1000;
-const CHECK_MAX_TIME = 60 * 1000;
+const CHECK_MAX_TIME = 5 * 60 * 1000;
 
 const newUserName = getenv('APP_USER');
 const newUserPass = getenv('APP_PASSWORD');
