@@ -27,6 +27,18 @@
                 version: "0.8.0"
             schema:
               "$ref": "#/definitions/healthCheckResult"
+          500:
+            description: "Unhealthy"
+            examples:
+              application/json:
+                healthy: false
+                checks.db: "Error: its broken"
+                uptime: 3688.422,
+                build.buildNumber: "901"
+                build.gitRef: "83e46a38509309220da19afa630b5354c56da39b"
+                version: "0.8.0"
+            schema:
+              "$ref": "#/definitions/healthCheckResult"
         tags:
           - "Health check"
         produces:
