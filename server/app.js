@@ -1,15 +1,9 @@
-const path = require('path');
-
 const restify = require('restify');
 const setupAuth = require('../api/helpers/auth.js');
 const ingestController = require('../api/controllers/ingesterController');
 const offenderController = require('../api/controllers/offender');
 const apiDocsController = require('../api/controllers/apiDocs');
 const healthController = require('../api/controllers/health');
-
-var swaggerConfig = {
-  appRoot: path.resolve(__dirname, '..')
-};
 
 const getServerOptions = (config, log) => {
   var options = {
@@ -82,16 +76,5 @@ module.exports = (config, log, db, callback) => {
     res.send(new restify.InternalError(err, err.message || 'unexpected error'));
   });
 
-  //TODO: decommission this callback
   callback(null, server);
-  // SwaggerRestify.create(swaggerConfig, (err, swaggerRestify) => {
-  //   if (err) {
-  //     throw err;
-  //   }
-  //
-  //   // install middleware
-  //   swaggerRestify.register(server);
-  //
-  //   callback(null, server);
-  // });
 };

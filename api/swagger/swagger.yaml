@@ -6,7 +6,6 @@
     description: "Provides the ability to query analytics results sets"
   basePath: "/"
   paths:
-    /api-docs:
     /health:
       get:
         summary: "Health Check"
