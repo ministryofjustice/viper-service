@@ -28,6 +28,7 @@
     "perform-ingest": "./bin/perform-ingest"
   },
   "dependencies": {
+    "applicationinsights": "^0.21.0",
     "bunyan": "1.8.10",
     "knex": "^0.13.0",
     "lodash": "^4.17.4",
