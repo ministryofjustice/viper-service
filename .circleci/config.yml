@@ -45,9 +45,6 @@ jobs:
           environment:
             MOCHA_FILE: build/junit/test-results.xml
             DB_URI: mssql://sa:aRubbishPasswordForC1Only@localhost:1433/viper
-      - run:
-          name: Check swagger.yaml definition
-          command: npm run verify
       - store_test_results:
           path: build
       - run:

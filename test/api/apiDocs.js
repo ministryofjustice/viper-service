@@ -29,9 +29,18 @@ describe('api /api-docs', () => {
         .expect(200)
         .then((res) => {
 
-          res.body.should.have.property('paths');
-          res.body.paths.should.have.property('/api-docs');
-          should.not.exist(res.body.paths['/api-docs']);
+          return new Promise((resolve, reject) => {
+            require('swagger-tools').specs.v2_0.validate(res.body, (err, results) => {
+              if (err) return reject(err);
+              if (results.errors) {
+                const error = results.errors
+                  .map(({message, path}) => `${message} at ${path.join(".")}`)
+                  .join("\n");
+                return reject(new Error("Invalid Swagger:\n" + error));
+              }
+              resolve("ok");
+            });
+          });
         });
     });
   });
