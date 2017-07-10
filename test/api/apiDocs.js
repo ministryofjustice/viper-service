@@ -32,7 +32,7 @@ describe('api /api-docs', () => {
           return new Promise((resolve, reject) => {
             require('swagger-tools').specs.v2_0.validate(res.body, (err, results) => {
               if (err) return reject(err);
-              if (results.errors) {
+              if (results && results.errors) {
                 const error = results.errors
                   .map(({message, path}) => `${message} at ${path.join(".")}`)
                   .join("\n");
