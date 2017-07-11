@@ -2,7 +2,7 @@
 const sleep = require('sleep-promise');
 
 const dbConfig = require('../server/config').db;
-const createDB = require('../server/db');
+const createDBConnection = require('../server/db');
 
 function getenv(name) {
   if (name in process.env) {
@@ -18,7 +18,7 @@ const newUserName = getenv('APP_USER');
 const newUserPass = getenv('APP_PASSWORD');
 if (!dbConfig) throw new Error(`Missing DB_URI environment variable`);
 
-const db = createDB({database: "master"});
+const db = createDBConnection({database: "master"});
 const id = db.client.wrapIdentifier;
 let failed = false;
 
@@ -41,27 +41,47 @@ const checkDBConnection = () => {
     });
 };
 
-const doSetup = () =>
-  db.schema
+function doSetup() {
+  return Promise.resolve(true)
+    .then(() => retry(createDB))
+    .then(() => retry(createUser));
+}
+
+function retry(func, max = 5, count = 0) {
+  return func().catch((err) => {
+    if (count < max) {
+      console.log("Got error %s, retrying", err.message);
+      return retry(func, max, count + 1);
+    }
+    throw err;
+  });
+}
+
+function createDB() {
+  return db.schema
     .raw(`EXEC sp_configure 'contained database authentication', 1`)
     .raw(`RECONFIGURE WITH OVERRIDE`)
     .raw(`CREATE DATABASE ${id(dbConfig.database)}
-      CONTAINMENT = PARTIAL COLLATE SQL_Latin1_General_CP1_CI_AS`)
+      CONTAINMENT = PARTIAL COLLATE SQL_Latin1_General_CP1_CI_AS`);
+}
+
+function createUser() {
+  return db.schema
     .raw(`USE ${id(dbConfig.database)}`)
     .raw(`CREATE USER ${id(newUserName)} WITH PASSWORD = '${newUserPass}'`)
-    .raw(`GRANT SELECT TO ${id(newUserName)}`)
-    .then(() => {
-      console.log("Setup completed", {
-        user: newUserName, database: dbConfig.database
-      });
-    })
-  .catch((err) => {
-    console.error("Unexpected error", err.message, "\n\n");
-    console.error(`You might need to delete the database ${id(dbConfig.database)} to retry`);
-    failed = true;
-  });
+    .raw(`GRANT SELECT TO ${id(newUserName)}`);
+}
 
 checkDBConnection()
   .then(() => doSetup())
+  .then(() => {
+    console.log("Setup completed", {
+      user: newUserName, database: dbConfig.database
+    });
+  })
+  .catch((err) => {
+    console.error("Unexpected error", err.message, "\n\n");
+    failed = true;
+  })
   .then(() => db.destroy())
   .then(() => process.exit(failed ? 1 : 0));
