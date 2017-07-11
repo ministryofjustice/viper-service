@@ -7,6 +7,7 @@ module.exports.health = (req, res, next) => {
         res.status(500);
       }
       res.send(result);
+      return next();
     })
     .catch(next);
 };

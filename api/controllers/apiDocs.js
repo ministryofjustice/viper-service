@@ -5,5 +5,5 @@ const swaggerYaml = yaml.safeLoad(swaggerDoc);
 
 module.exports.apiDocs = (req, res, next) => {
   res.json(swaggerYaml);
-  next;
+  return next();
 };
