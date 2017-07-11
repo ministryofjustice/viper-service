@@ -1,13 +1,9 @@
-const path = require('path');
-
 const restify = require('restify');
-const SwaggerRestify = require('swagger-restify-mw');
 const setupAuth = require('../api/helpers/auth.js');
 const ingestController = require('../api/controllers/ingesterController');
-
-var swaggerConfig = {
-  appRoot: path.resolve(__dirname, '..')
-};
+const offenderController = require('../api/controllers/offender');
+const apiDocsController = require('../api/controllers/apiDocs');
+const healthController = require('../api/controllers/health');
 
 const getServerOptions = (config, log) => {
   var options = {
@@ -51,7 +47,14 @@ const setupMiddleware = (server) => {
 };
 
 const addEndpoints = (server) => {
+  server.get('/', (req, res) => {
+    res.send(new restify.NotFoundError('Password Required'));
+  });
   server.post('/ingest', ingestController.doIngest);
+  server.get('/viper/:nomsId', offenderController.retrieveViperRating);
+  server.get('/api-docs', apiDocsController.apiDocs);
+  server.get('/health', healthController.health);
+
   return server;
 };
 
@@ -73,14 +76,5 @@ module.exports = (config, log, db, callback) => {
     res.send(new restify.InternalError(err, err.message || 'unexpected error'));
   });
 
-  SwaggerRestify.create(swaggerConfig, (err, swaggerRestify) => {
-    if (err) {
-      throw err;
-    }
-
-    // install middleware
-    swaggerRestify.register(server);
-
-    callback(null, server);
-  });
+  callback(null, server);
 };

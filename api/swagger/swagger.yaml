@@ -6,12 +6,8 @@
     description: "Provides the ability to query analytics results sets"
   basePath: "/"
   paths:
-    /api-docs:
-      x-swagger-pipe: swagger_definition
     /health:
       get:
-        x-swagger-router-controller: health
-        operationId: health
         summary: "Health Check"
         description: "Performs a basic application health check"
         responses:
@@ -53,8 +49,6 @@
           description: "A known NOMS ID"
           x-example: "A1234AB"
       get:
-        x-swagger-router-controller: offender
-        operationId: retrieveViperRating
         summary: "Retrieve VIPER Rating"
         description: "Retrieves a single VIPER Rating from the dataset"
         responses:
