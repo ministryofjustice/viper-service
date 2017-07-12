@@ -69,7 +69,7 @@ function createUser() {
   return db.schema
     .raw(`USE ${id(dbConfig.database)}`)
     .raw(`CREATE USER ${id(newUserName)} WITH PASSWORD = '${newUserPass}'`)
-    .raw(`GRANT SELECT TO ${id(newUserName)}`);
+    .raw(`GRANT SELECT, INSERT, UPDATE, DELETE TO ${id(newUserName)}`);
 }
 
 checkDBConnection()
