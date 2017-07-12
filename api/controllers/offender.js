@@ -1,34 +1,28 @@
-const restify = require('restify');
+const errors = require('../../server/errors');
 const reader = require('../datasources/reader');
 
 const nomisIdPattern = /^[A-Z]\d{4}[A-Z]{2}$/;
-
-const successfulViperRating = (nomsId, viperRating) =>
-  ({
-    nomsId: nomsId,
-    viperRating: 1 * viperRating,
-  });
 
 module.exports.retrieveViperRating = (req, res, next) => {
 
   var nomsId = req.params.nomsId;
 
   if (!nomisIdPattern.test(nomsId)) {
-    next(new restify.BadRequestError("Validation errors"));
-    return;
+    return errors.validation(res, 'invalid nomsId');
   };
 
   reader.read(nomsId, req.db).then(
-
     (viperRating) => {
-
-      if (viperRating) {
-        res.send(successfulViperRating(nomsId, viperRating));
-        next();
-      } else {
-        next(new restify.ResourceNotFoundError(`viper record for nomsId ${nomsId} does not exist`));
+      if (!viperRating) {
+        return errors.notFound(res,
+          `viper record for nomsId ${nomsId} does not exist`
+        );
       }
+      return res.json({
+        nomsId: nomsId,
+        viperRating: 1 * viperRating,
+      });
     },
-
-    (err) => next(err));
+    (err) => next(err)
+  );
 };

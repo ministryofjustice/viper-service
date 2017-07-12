@@ -44,7 +44,7 @@ describe('api /viper', () => {
         .expect('Content-Type', /json/)
         .expect(400)
         .then((res) => {
-          res.body.should.have.property('message', "Validation errors");
+          res.body.should.have.property('error', 'validation');
         });
     });
 
@@ -55,7 +55,7 @@ describe('api /viper', () => {
         .expect('Content-Type', /json/)
         .expect(400)
         .then((res) => {
-          res.body.should.have.property('message', "Validation errors");
+          res.body.should.have.property('error', 'validation');
         });
 
     });

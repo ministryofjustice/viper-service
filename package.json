@@ -29,13 +29,15 @@
   },
   "dependencies": {
     "applicationinsights": "^0.21.0",
+    "basic-auth": "^1.1.0",
+    "body-parser": "^1.17.2",
     "bunyan": "1.8.10",
+    "express": "^4.15.3",
+    "helmet": "^3.6.1",
     "js-yaml": "^3.9.0",
     "knex": "^0.13.0",
     "lodash": "^4.17.4",
     "mssql": "^3.3.0",
-    "require-sql": "1.0.0",
-    "restify": "^4.3.1",
     "sleep-promise": "^2.0.0",
     "tedious": "2.0.0"
   },
@@ -50,8 +52,6 @@
     "sinon": "^2.3.7",
     "spectacle-docs": "0.8.2",
     "supertest": "3.0.0",
-    "swagger": "0.7.5",
-    "swagger-tools": "^0.10.1",
-    "wait-port": "^0.1.4"
+    "swagger-tools": "^0.10.1"
   }
 }

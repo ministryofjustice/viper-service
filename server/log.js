@@ -1,4 +1,3 @@
-const restify = require('restify');
 const Logger = require('bunyan');
 
 const config = require('./config');
@@ -13,7 +12,6 @@ module.exports = new Logger({
       stream: process.stdout,
       level: 'debug',
     }
-  ],
-  serializers: restify.bunyan.serializers,
+  ]
 });
 
