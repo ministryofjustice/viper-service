@@ -6,8 +6,7 @@ module.exports.health = (req, res, next) => {
       if (!result.healthy) {
         res.status(500);
       }
-      res.send(result);
-      return next();
+      return res.json(result);
     })
     .catch(next);
 };

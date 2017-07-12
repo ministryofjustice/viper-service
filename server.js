@@ -1,3 +1,5 @@
+const http = require('http');
+
 const config = require('./server/config');
 const log = require('./server/log');
 
@@ -6,12 +8,11 @@ const makeApp = require('./server/app');
 
 const db = makeDB();
 
-makeApp(config, log, db, (err, server) => {
+makeApp(config, log, db, (err, app) => {
   if (err) throw err;
 
-  server.on('listening', () => {
+  const server = http.createServer(app);
+  server.listen(config.port, () => {
     log.info({addr: server.address()}, 'Server listening');
   });
-
-  server.listen(config.port);
 });
