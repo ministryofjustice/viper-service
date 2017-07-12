@@ -34,11 +34,7 @@ const checkDBConnection = () => {
       return sleep(CHECK_WAIT_TIMEOUT).then(repeatedBit);
     });
 
-  return repeatedBit()
-    .catch((err) => {
-      console.error("Failed to connect to DB", err);
-      failed = true;
-    });
+  return repeatedBit();
 };
 
 function doSetup() {
