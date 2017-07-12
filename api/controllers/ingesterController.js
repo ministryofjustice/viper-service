@@ -11,7 +11,7 @@ module.exports.doIngest = (req, res, next) => {
       log.info(success);
     },
     (fail) => {
-      log.err(fail);
+      log.error(fail);
     }
   );
 };

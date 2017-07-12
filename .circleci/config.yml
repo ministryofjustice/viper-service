@@ -44,7 +44,7 @@ jobs:
           command: npm run test-report
           environment:
             MOCHA_FILE: build/junit/test-results.xml
-            DB_URI: mssql://sa:aRubbishPasswordForC1Only@localhost:1433/viper
+            DB_URI: mssql://app:aRubbishPasswordForC1Only@localhost:1433/viper
       - store_test_results:
           path: build
       - run:

@@ -85,8 +85,8 @@ context('with a database', () => {
     later.setMinutes(now.getMinutes() + 1)
 
     return Promise.all([
-      knex('staging').truncate(),
-      knex('scores').truncate()
+      knex('staging').delete(),
+      knex('scores').delete()
     ])
       .then(() =>
         knex('staging').insert([
