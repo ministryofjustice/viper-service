@@ -3,7 +3,7 @@ version: 2
 jobs:
   build:
     docker:
-      - image: circleci/node:6
+      - image: circleci/node:8
       - image: microsoft/mssql-server-linux:ctp2-1
         environment:
           ACCEPT_EULA: Y
@@ -30,6 +30,9 @@ jobs:
           key: node_modules-{{ checksum "package.json" }}
           paths:
             - ./node_modules
+      - run:
+          name: Check for security advisories
+          command: npm run snyk
       - run:
           name: Initialise SQL Server
           command: |

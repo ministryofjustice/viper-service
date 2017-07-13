@@ -43,6 +43,12 @@ If you wish to have the output in raw JSON, then you can run the server without 
 $ node server.js
 ```
 
+### Running the CicleCI build locally
+This can be done using the `circleci` CLI command, you'll need to set the `SNYK_TOKEN` environment variable to make this work.
+
+ * [circleci CLI](https://circleci.com/docs/2.0/local-jobs/)
+ * [snyk auth](https://snyk.io/docs/using-snyk#authentication)
+
 ### Database connections
 
 This can be left out in dev mode, and any API routes which use the database will fail.
@@ -111,7 +117,7 @@ Viper scores will be pushed directly into the staging table from a script run by
 
 Once in the staging table, the data needs to be merged with the scores table.
 
-This can be done either by sending an `HTTP POST` to `/ingest`, 
+This can be done either by sending an `HTTP POST` to `/ingest`,
 
 or by running
 
