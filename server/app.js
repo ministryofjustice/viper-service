@@ -3,6 +3,7 @@ const helmet = require('helmet');
 const bodyParser = require('body-parser');
 
 const requireAuth = require('./auth');
+const swagger = require('swagger-node-express');
 const errors = require('./errors');
 
 const ingestController = require('../api/controllers/ingesterController');
@@ -12,6 +13,14 @@ const healthController = require('../api/controllers/health');
 
 module.exports = (config, log, db, callback) => {
   const app = express();
+
+  var subpath = express();
+
+  app.use(bodyParser());
+  app.use("/v1", subpath);
+
+  swagger.createNew(subpath);
+  swagger.configureSwaggerPaths('', 'api-docs', '');
 
   app.set('json spaces', 2);
   app.set('trust proxy', true);
@@ -50,6 +59,10 @@ function setupAppRoutes(app, config, log) {
   app.post('/ingest', ingestController.doIngest);
   app.get('/viper/:nomsId', offenderController.retrieveViperRating);
 
+  app.use(express.static('swagger-ui-dist'));
+  app.get('/', function (req, res) {
+    res.sendFile(__dirname + '/swagger-ui-dist/index.html');
+  });
   app.use(function notFoundHandler(req, res) {
     errors.notFound(res, 'No handler exists for this url');
   });
