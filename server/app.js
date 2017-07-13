@@ -3,12 +3,12 @@ const helmet = require('helmet');
 const bodyParser = require('body-parser');
 
 const requireAuth = require('./auth');
-// const swagger = require('swagger-node-express');
+const serveDocs = require('./docs');
+
 const errors = require('./errors');
 
 const ingestController = require('../api/controllers/ingesterController');
 const offenderController = require('../api/controllers/offender');
-const apiDocsController = require('../api/controllers/apiDocs');
 const healthController = require('../api/controllers/health');
 
 module.exports = (config, log, db, callback) => {
@@ -43,15 +43,15 @@ function setupBaseMiddleware(app, log, db) {
 
 function setupAppRoutes(app, config, log) {
   app.get('/health', healthController.health);
-  app.get('/api-docs', apiDocsController.apiDocs);
 
   const authMiddleware = requireAuth(config.auth, log);
   if (authMiddleware) app.use(authMiddleware);
 
+  serveDocs(app);
+
   app.post('/ingest', ingestController.doIngest);
   app.get('/viper/:nomsId', offenderController.retrieveViperRating);
 
-  app.use(express.static('swagger-ui-dist'));
   app.use(function notFoundHandler(req, res) {
     errors.notFound(res, 'No handler exists for this url');
   });
