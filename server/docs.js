@@ -11,6 +11,7 @@ module.exports = () => {
   router.get('/api-docs', (req, res) => {
     return res.json(swaggerObject);
   });
-  router.use('/', swaggerUi.serve, swaggerUi.setup(swaggerObject));
+  router.get('/', swaggerUi.setup(swaggerObject));
+  router.use('/', swaggerUi.serve);
   return router;
 };
