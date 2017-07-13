@@ -31,6 +31,9 @@ jobs:
           paths:
             - ./node_modules
       - run:
+          name: Check for security advisories
+          command: npm run snyk
+      - run:
           name: Initialise SQL Server
           command: |
             npm run setup-mssql
