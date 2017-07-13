@@ -47,7 +47,7 @@ function setupAppRoutes(app, config, log) {
   const authMiddleware = requireAuth(config.auth, log);
   if (authMiddleware) app.use(authMiddleware);
 
-  serveDocs(app);
+  app.use(serveDocs());
 
   app.post('/ingest', ingestController.doIngest);
   app.get('/viper/:nomsId', offenderController.retrieveViperRating);
