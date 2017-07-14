@@ -1,4 +1,5 @@
 const express = require('express');
+const bunyanMiddleware = require('bunyan-middleware');
 const helmet = require('helmet');
 const bodyParser = require('body-parser');
 
@@ -25,6 +26,11 @@ module.exports = (config, log, db, callback) => {
 };
 
 function setupBaseMiddleware(app, log, db) {
+  app.use(bunyanMiddleware({
+    logger: log,
+    obscureHeaders: ['Authorization'],
+  }));
+
   app.use(function detectAzureSSL(req, res, next) {
     if (!req.get('x-forwarded-proto') && req.get('x-arr-ssl')) {
       req.headers['x-forwarded-proto'] = 'https';
@@ -58,7 +64,7 @@ function setupAppRoutes(app, config, log) {
 
   // eslint-disable-next-line no-unused-vars
   app.use(function errorHandler(err, req, res, next) {
-    log.warn(err);
+    req.log.warn(err);
     errors.unexpected(res, err);
   });
 }
