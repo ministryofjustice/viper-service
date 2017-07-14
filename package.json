@@ -3,11 +3,11 @@
   "description": "A Restful service to provide access to the VIPER Rating for a known ID",
   "version": "0.0.1",
   "private": true,
-  "author": "Matt Smith <mattonfoot@gmail.com> (http://about.me/mattonfoot)",
+  "author": "Ministry of Justice",
   "license": "MIT",
   "engines": {
-    "npm": "~5.2.0",
-    "node": "~8.1.4"
+    "npm": "~3.9.5",
+    "node": "~6.11.1"
   },
   "main": "server.js",
   "scripts": {

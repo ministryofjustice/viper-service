@@ -3,7 +3,7 @@ version: 2
 jobs:
   build:
     docker:
-      - image: circleci/node:8
+      - image: circleci/node:6
       - image: microsoft/mssql-server-linux:ctp2-1
         environment:
           ACCEPT_EULA: Y
@@ -24,9 +24,7 @@ jobs:
       - run:
           name: Install Dependencies
           command: |
-            # Amusingly there's a bug where npm can't install npm correctly
-            # so we'll use yarn to update npm instead
-            sudo yarn global add npm@$(node -p 'require("./package.json").engines.npm')
+            npm prune
             npm install
       - save_cache:
           key: node_modules-{{ checksum "package.json" }}
