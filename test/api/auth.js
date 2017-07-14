@@ -23,12 +23,12 @@ describe('basic authentication', () => {
 
   it('should block access without auth', () =>
     request(server)
-      .get('/')
+      .get('/whatever')
       .expect(401)
   );
   it('should allow access with auth', () =>
     request(server)
-      .get('/')
+      .get('/whatever')
       .auth(auth.user, auth.pass)
       .expect(404)
   );

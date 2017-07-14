@@ -3,11 +3,12 @@ const helmet = require('helmet');
 const bodyParser = require('body-parser');
 
 const requireAuth = require('./auth');
+const serveDocs = require('./docs');
+
 const errors = require('./errors');
 
 const ingestController = require('../api/controllers/ingesterController');
 const offenderController = require('../api/controllers/offender');
-const apiDocsController = require('../api/controllers/apiDocs');
 const healthController = require('../api/controllers/health');
 
 module.exports = (config, log, db, callback) => {
@@ -42,10 +43,11 @@ function setupBaseMiddleware(app, log, db) {
 
 function setupAppRoutes(app, config, log) {
   app.get('/health', healthController.health);
-  app.get('/api-docs', apiDocsController.apiDocs);
 
   const authMiddleware = requireAuth(config.auth, log);
   if (authMiddleware) app.use(authMiddleware);
+
+  app.use(serveDocs());
 
   app.post('/ingest', ingestController.doIngest);
   app.get('/viper/:nomsId', offenderController.retrieveViperRating);
