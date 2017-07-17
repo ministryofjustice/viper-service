@@ -1,5 +1,7 @@
 exports.seed = (knex) =>
-  knex('scores').delete()
+  knex('scores')
+    .whereIn('nomis_id',['J1234LO','R6524MO','I9876RA'])
+    .delete()
     .then(
       () => knex('scores').insert([
         {nomis_id: 'J1234LO', score: 0.35},

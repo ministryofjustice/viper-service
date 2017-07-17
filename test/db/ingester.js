@@ -58,6 +58,7 @@ context('with a database', () => {
     const now = new Date();
 
     return Promise.all([
+      knex('scores').delete(),
       stagingSeed(knex), // 6 in staging
       scoresSeed(knex)   // 3 in scores
     ])

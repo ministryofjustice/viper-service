@@ -50,7 +50,7 @@
           x-example: "A1234AB"
       get:
         summary: "Retrieve VIPER Rating"
-        description: "Retrieves a single VIPER Rating from the dataset"
+        description: "Retrieves a single VIPER Rating from the dataset  Pre-seeded values for smoke testing: `B8888BB`, `I1111II`, `O0000OO`"
         responses:
           200:
             description: "Success"
