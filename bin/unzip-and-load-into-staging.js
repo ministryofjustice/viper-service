@@ -13,18 +13,21 @@ const options = {
 
 console.log('filename is ' + filename);
 
-function insertRow (data) {
+function insertRow (data, txn) {
 
   knex('staging')
+    .transacting(txn)
     .insert({nomis_id: data.offender_id_display, score: data.viper})
     .then((success) => {
-        console.log("success");
+        // console.log("success");
       },
       (err) => {
         console.log(err);
       });
 }
 
+var promises = []
+function doIt(txn) {
 yauzl.open(filename, {lazyEntries: true}, function (err, zipfile) {
   if (err) throw err;
   zipfile.readEntry();
@@ -43,13 +46,20 @@ yauzl.open(filename, {lazyEntries: true}, function (err, zipfile) {
           })
           .on('data', function (data) {
             // outputs an object containing a set of key/value pair representing a line found in the csv file.
-            console.log(data);
+            // console.log(data);
             if (data.viper !== 'viper') {
-              insertRow(data);
+              promises.push(insertRow(data, txn));
             }
           })
-          .on('end', function (something) {
-            console.log("finished streaming");
+          .on('end', function () {
+            console.log("finished streaming. Waiting for things to finish");
+            Promise.all(promises).then((succes) => {
+              txn.commit
+              process.exit(0)
+            }, (fail) => {
+              console.log("damn.")
+              process.exit(1)
+            })
           });
 
         // .on('column',function(key,value){
@@ -57,6 +67,12 @@ yauzl.open(filename, {lazyEntries: true}, function (err, zipfile) {
         //   console.log('#' + key ' = ' + value);
         // })
       });
-    }
-  );
+    });
+    zipfile.on('end', function () {
+      txn.commit;
+    });
+
 });
+}
+
+knex.transaction(doIt);
