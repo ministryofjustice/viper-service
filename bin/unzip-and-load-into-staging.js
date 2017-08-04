@@ -1,15 +1,16 @@
 #!/usr/bin/env node
 
 const yauzl = require('yauzl');
-const csv = require('csv-stream');
+const csv = require('csv');
+const filename = process.argv[2];
 
 const options = {
   columns : ['offender_id_display', 'viper'], // by default read the first line and use values found as columns
 };
 
-var csvStream = csv.createStream(options);
+console.log("filename is " + filename);
 
-yauzl.open('vipers.zip', {lazyEntries: true}, function (err, zipfile) {
+yauzl.open(filename, {lazyEntries: true}, function (err, zipfile) {
   if (err) throw err;
   zipfile.readEntry();
   zipfile.on('entry', function (entry) {
@@ -20,7 +21,8 @@ yauzl.open('vipers.zip', {lazyEntries: true}, function (err, zipfile) {
         readStream.on('end', function () {
           zipfile.readEntry();
         });
-        readStream.pipe(csvStream, 'utf-8')
+        const parser = csv.parse(options);
+        readStream.pipe(parser)
           .on('error',function(err){
             console.error(err);
           })
