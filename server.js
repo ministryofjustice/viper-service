@@ -1,3 +1,6 @@
+// Do appinsights first as it does some magic instrumentation work
+require('./server/azure-appinsights');
+
 const http = require('http');
 
 const config = require('./server/config');
