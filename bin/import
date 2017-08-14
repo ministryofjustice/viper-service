@@ -1,0 +1,69 @@
+/* eslint-disable no-console, camelcase */
+const fs = require('fs');
+const createDBConnectionPool = require('./server/db');
+
+const BATCH_SIZE = 1000;
+
+const action = "import";
+
+function unpackQuotedString(str) {
+  return str.slice(1, -1);
+}
+
+let data = fs.readFileSync(process.argv[2], 'utf8')
+  .split('\n')
+  .slice(1) // remove header row
+  .filter(Boolean)
+  .map((row) => {
+    const rowData = row.split(',');
+    return {
+      nomis_id: unpackQuotedString(rowData[0]),
+      score: parseFloat(rowData[1]),
+    };
+  });
+
+const _ = require('lodash');
+const grouped = _.groupBy(data, 'nomis_id');
+
+if (action === "show-duplicates") {
+  let doubles = 0;
+  _.each(grouped, (rows, nomisId) => {
+    if (rows.length === 1) return;
+    console.log("%s: %j %s",
+      nomisId,
+      rows.map(row => row.score),
+      rows.some(row => row.score >= 0.6) ? "****" : ""
+    );
+    doubles += 1;
+  });
+  console.log("%d doubles found", doubles);
+}
+
+// Remove duplicates by picking the highest score
+data = _.map(grouped, (rows, nomis_id) => ({
+  nomis_id,
+  score: Math.max.apply(Math, rows.map((row) => row.score))
+}));
+
+if (action === "import") {
+  const db = createDBConnectionPool();
+
+  // Give some idea of progress
+  let i = 0;
+  const total = data.length;
+  db.on('query', () => {
+    i += 1;
+    console.log('%s Inserting %d/%d',
+      new Date().toISOString(), i * BATCH_SIZE, total);
+  });
+
+  db.batchInsert('staging', data, BATCH_SIZE)
+    .then(() => {
+      console.log('done');
+      return db.destroy();
+    })
+    .catch((err) => {
+      console.error(err);
+      process.exit(1);
+    });
+}
