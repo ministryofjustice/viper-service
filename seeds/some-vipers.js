@@ -5,7 +5,7 @@ exports.seed = (knex) =>
     .then(
       () => knex('scores').insert([
         {nomis_id: 'I1111II', score: 0.2181236123},
-        {nomis_id: 'O0000OO', score: 0.652134534543},
+        {nomis_id: 'O0000OO', score: 0},
         {nomis_id: 'B8888BB', score: 0.98324545745},
       ])
     );
