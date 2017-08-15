@@ -1,0 +1,53 @@
+#!/usr/bin/env node
+
+/* eslint-disable no-console, camelcase */
+const fs = require('fs');
+const createDBConnectionPool = require('../server/db');
+
+const BATCH_SIZE = 1000;
+
+function unpackQuotedString(str) {
+  return str.slice(1, -1);
+}
+
+let data = fs.readFileSync(process.argv[2], 'utf8')
+  .split('\n')
+  .slice(1) // remove header row
+  .filter(Boolean)
+  .map((row) => {
+    const rowData = row.split(',');
+    return {
+      nomis_id: unpackQuotedString(rowData[0]),
+      score: parseFloat(rowData[1]),
+    };
+  });
+
+const _ = require('lodash');
+const grouped = _.groupBy(data, 'nomis_id');
+
+// Remove duplicates by picking the highest score
+data = _.map(grouped, (rows, nomis_id) => ({
+  nomis_id,
+  score: Math.max.apply(Math, rows.map((row) => row.score))
+}));
+
+const db = createDBConnectionPool();
+
+// Give some idea of progress
+let i = 0;
+const total = data.length;
+db.on('query', () => {
+  i += 1;
+  console.log('%s Inserting %d/%d',
+    new Date().toISOString(), i * BATCH_SIZE, total);
+});
+
+db.batchInsert('staging', data, BATCH_SIZE)
+  .then(() => {
+    console.log('done');
+    return db.destroy();
+  })
+  .catch((err) => {
+    console.error(err);
+    process.exit(1);
+  });
