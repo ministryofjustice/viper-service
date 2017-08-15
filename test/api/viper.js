@@ -21,8 +21,9 @@ describe('api /viper', () => {
   describe('GET /:nomsId', () => {
 
     it('should return a 200 response when the nomsId is valid', () => {
-
+      let query;
       tracker.on('query', (q) => {
+        query = q;
         q.response([{score: 0.56}]);
       });
 
@@ -32,6 +33,8 @@ describe('api /viper', () => {
         .expect('Content-Type', /json/)
         .expect(200)
         .then((res) => {
+          query.bindings.should.contain('A1234BC');
+
           res.body.should.have.property('nomsId', 'A1234BC');
           res.body.should.have.property('viperRating', 0.56);
         });

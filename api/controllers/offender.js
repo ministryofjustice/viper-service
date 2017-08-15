@@ -1,7 +1,11 @@
 const errors = require('../../server/errors');
 const reader = require('../datasources/reader');
 
-const nomisIdPattern = /^[A-Z|.]\d{4}[A-Z]{2}$/;
+const nomisIdPattern = new RegExp(
+  require('../swagger/docs')
+    .paths['/viper/{nomsId}']
+    .parameters[0].pattern
+);
 
 module.exports.retrieveViperRating = (req, res, next) => {
 
