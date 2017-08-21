@@ -1,0 +1,62 @@
+#!/usr/bin/env node
+const url = require('url');
+const path = require('path');
+const azureStorage = require('azure-storage');
+
+const log = require('../server/log');
+
+const CONTAINER_NAME = "csv";
+
+
+const filename = process.argv[2];
+if (!filename) {
+  console.warn("Usage: upload-dataset <filename>");
+  process.exit(1);
+}
+
+const sasUri = process.env.SAS_URI;
+if (!sasUri) {
+  console.warn("Expected SAS_URI environment variable");
+  process.exit(1);
+}
+
+log.info("Uploading dataset to storage account..");
+
+let exitCode = 0;
+uploadToStorage(filename, sasUri)
+  .then(() => log.info("done."))
+  .catch((err) => {
+    log.error(err);
+    exitCode = 1;
+  })
+  .then(() => process.exit(exitCode));
+
+function uploadToStorage(filename, sasUri) {
+  const blobService = createBlobService(sasUri);
+
+  return Promise.resolve()
+    .then(() =>
+      uploadFile(blobService, require.resolve("./import_staging_data_format.xml")))
+    .then(() =>
+      uploadFile(blobService, path.resolve(filename)));
+}
+
+function createBlobService(sasUri) {
+  const details = url.parse(sasUri);
+  return azureStorage.createBlobServiceWithSas(details.host, details.search);
+}
+
+function uploadFile(blobService, filepath) {
+  log.info("Uploading %s", filepath);
+  return new Promise((resolve, reject) => {
+    blobService.createBlockBlobFromLocalFile(
+      CONTAINER_NAME,
+      path.basename(filepath),
+      filepath,
+      (err) => {
+        if (err) return reject(err);
+        return resolve();
+      }
+    );
+  });
+}

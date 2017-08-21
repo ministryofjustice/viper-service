@@ -111,18 +111,6 @@ npm install -g sql-cli
 mssql -s localhost -u <database-user> -p <database-user-password> -d <database-name>
 ```
 
-### Performing a data ingest
+### Performing a data upload
 
-Viper scores will be pushed directly into the staging table from a script run by Analytics.
-
-Once in the staging table, the data needs to be merged with the scores table.
-
-This can be done either by sending an `HTTP POST` to `/ingest`,
-
-or by running
-
-`npm run perform-ingest`
-
-or just run the script directly
-
-`/bin/perform-ingest`
+TBC

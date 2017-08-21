@@ -8,7 +8,6 @@ const serveDocs = require('./docs');
 
 const errors = require('./errors');
 
-const ingestController = require('../api/controllers/ingesterController');
 const offenderController = require('../api/controllers/offender');
 const healthController = require('../api/controllers/health');
 
@@ -55,7 +54,6 @@ function setupAppRoutes(app, config, log) {
 
   app.use(serveDocs());
 
-  app.post('/ingest', ingestController.doIngest);
   app.get('/viper/:nomsId', offenderController.retrieveViperRating);
 
   app.use(function notFoundHandler(req, res) {
