@@ -1,0 +1,30 @@
+#!/usr/bin/env node
+
+const createDb = require('../server/db');
+const importer = require('../api/datasources/importer');
+const log = require('../server/log');
+
+const MINUTES = 60 * 1000;
+
+const filename = process.argv[2];
+if (!filename) {
+    console.warn("Usage: import-dataset <filename>");
+    process.exit(1);
+}
+
+log.info("Importing dataset from storage account..");
+
+const db = createDb({
+  options: {
+    requestTimeout: 10 * MINUTES
+  }
+});
+
+let exitCode = 0;
+importer(db, filename)
+  .then(() => log.info("done."))
+  .catch((err) => {
+    log.error(err);
+    exitCode = 1;
+  })
+  .then(() => process.exit(exitCode));

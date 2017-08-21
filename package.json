@@ -25,11 +25,11 @@
     "seed": "knex seed:run",
     "record-build-info": "node ./bin/record-build-info",
     "wait-for-deploy": "node ./bin/wait-for-deploy",
-    "perform-ingest": "./bin/perform-ingest",
     "snyk": "snyk test"
   },
   "dependencies": {
     "applicationinsights": "^0.21.0",
+    "azure-storage": "^2.3.0",
     "basic-auth": "^1.1.0",
     "body-parser": "^1.17.2",
     "bunyan": "1.8.10",
@@ -40,6 +40,8 @@
     "knex": "^0.13.0",
     "lodash": "^4.17.4",
     "mssql": "^3.3.0",
+    "request": "^2.81.0",
+    "request-promise": "^4.2.1",
     "sleep-promise": "^2.0.0",
     "swagger-ui-express": "^2.0.1",
     "tedious": "2.0.0"
