@@ -83,7 +83,7 @@ context('with a database', () => {
 
     let now = new Date();
     let later = new Date(now);
-    later.setMinutes(now.getMinutes() + 1)
+    later.setMinutes(now.getMinutes() + 1);
 
     return Promise.all([
       knex('staging').delete(),
@@ -91,12 +91,12 @@ context('with a database', () => {
     ])
       .then(() =>
         knex('staging').insert([
-          {nomis_id: 'A1234AA', score: 0.01, uploaded: now}
+          {nomis_id: 'B1234AA', score: 0.01, uploaded: now}
         ])
       )
       .then(() =>
         knex('staging').insert([
-          {nomis_id: 'A1234AA', score: 0.99, uploaded: later}
+          {nomis_id: 'B1234AA', score: 0.99, uploaded: later}
         ])
       )
       .then(() => ingester.ingest(knex))
