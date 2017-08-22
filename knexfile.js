@@ -11,6 +11,7 @@ module.exports = {
   connection: _.defaultsDeep(config.db, {
     options: {
       encrypt: true,
+      requestTimeout: 60 * 1000,
     },
   }),
   acquireConnectionTimeout: 3000,
