@@ -1,0 +1,107 @@
+#!/usr/bin/env node
+const request = require('request-promise');
+
+const log = require('../server/log');
+
+const tasks = ["import-dataset", "merge-dataset"];
+
+main()
+  .catch((err) => {
+    log.error(err);
+    process.exit(1);
+  });
+
+function main() {
+  const task = process.argv[2];
+  if (tasks.indexOf(task) === -1) {
+      console.warn("Usage: import-dataset [ %s ]", tasks.join(" | "));
+      process.exit(1);
+  }
+
+  const args = process.argv.slice(3);
+
+  const appName = getenv('APP_NAME');
+  const username = getenv('USERNAME');
+  const password = getenv('PASSWORD');
+
+  const kudu = createKuduClient(appName, username, password);
+
+  return Promise.resolve()
+    .then(() => updateWebjob(kudu, task))
+    .then(() => runWebjob(kudu, task, args))
+    .then((jobUrl) => watchJob(kudu, jobUrl))
+    .then(({info, output}) => {
+      log.info("Job completed with result: %s", info.status);
+      console.log("Log output:\n%s", output);
+    });
+}
+
+function updateWebjob(kudu, task) {
+  log.info("Updating webjob %s", task);
+  return kudu({
+    method: 'PUT',
+    url: `/api/triggeredwebjobs/${task}`,
+    headers: {
+      'Content-Disposition': 'attachment; filename=run.sh',
+      'Content-Type': 'text/plain'
+    },
+    json: false,
+    body: `
+cd $WEBROOT_PATH
+
+node tasks/${task} $@
+    `
+  });
+}
+
+function runWebjob(kudu, task, args) {
+  log.info("running webjob %s %j", task, args);
+  return kudu({
+    method: 'POST',
+    url: `/api/triggeredwebjobs/${task}/run`,
+    qs: {
+      arguments: args.join(" "),
+    },
+    resolveWithFullResponse: true
+  })
+    .then((res) => {
+      return res.headers.location;
+    });
+}
+
+function watchJob(kudu, jobUrl) {
+  log.info("fetching webjob info from %s", jobUrl);
+  const jobInfoP = kudu({method: 'GET', baseUrl: null, url: jobUrl});
+  return jobInfoP
+    .then((jobInfo) => {
+      if (jobInfo.status === "Running") {
+        log.info("job still running, checking again in 5 seconds");
+        return wait(5).then(() => watchJob(kudu, jobUrl));
+      }
+      return kudu({method: 'GET', baseUrl: null, url: jobInfo.output_url})
+        .then((output) => ({
+          info: jobInfo,
+          output
+        }));
+    });
+}
+
+function wait(seconds) {
+  return new Promise((resolve) => setTimeout(resolve, seconds * 1000));
+}
+
+function createKuduClient(appName, username, password) {
+  log.info("Creating kudu management client...");
+  return request.defaults({
+    baseUrl: `https://${appName}.scm.azurewebsites.net`,
+    auth: { username, password },
+    json: true,
+  });
+}
+
+function getenv(name) {
+  if (name in process.env) {
+    return process.env[name];
+  }
+  throw new Error(`Missing ${name} environment variable`);
+}
