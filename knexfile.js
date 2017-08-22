@@ -5,7 +5,6 @@ const _ = require('lodash');
 
 const config = require('./server/config');
 
-
 module.exports = {
   client: 'mssql',
   connection: _.defaultsDeep(config.db, {

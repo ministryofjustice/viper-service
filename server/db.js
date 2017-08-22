@@ -7,7 +7,11 @@ const dbConfig = require('../knexfile');
 const ai = require('./azure-appinsights');
 
 module.exports = function createDBConnectionPool(overrides = {}) {
-  const db = knex(_.defaultsDeep({connection: overrides}, dbConfig));
+  const db = knex(_.defaultsDeep(
+    {connection: overrides},
+    {connection: {requestTimeout: 10 * 1000}},
+    dbConfig
+  ));
   if (ai) instrument(db);
 
   return db;
