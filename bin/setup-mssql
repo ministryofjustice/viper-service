@@ -11,7 +11,11 @@ function getenv(name) {
   throw new Error(`Missing ${name} environment variable`);
 }
 
-const CHECK_WAIT_TIMEOUT = 1000;
+function log(msg, ...args) {
+  console.warn("%s: " + msg, new Date().toISOString(), ...args);
+}
+
+const CHECK_WAIT_TIMEOUT = 5 * 1000;
 const CHECK_MAX_TIME = 30 * 1000;
 
 const newUserName = getenv('APP_USER');
@@ -27,14 +31,14 @@ const checkDBConnection = () => {
   const repeatedBit = () =>
     db.raw("SELECT 1").timeout(CHECK_WAIT_TIMEOUT)
     .catch((err) => {
-      console.warn("%s: Connection failing %s, retrying...", new Date().toISOString(), err.message);
+      log("Connection failing %s, retrying...", err.message);
       if (Date.now() - startedTrying >= CHECK_MAX_TIME) {
         throw err;
       }
       return sleep(CHECK_WAIT_TIMEOUT).then(repeatedBit);
     });
 
-  console.log("Connecting to database...");
+  log("Connecting to database...");
   return repeatedBit();
 };
 
@@ -47,7 +51,7 @@ function doSetup() {
 function retry(func, max = 5, count = 0) {
   return func().catch((err) => {
     if (count < max) {
-      console.log("Got error %s, retrying", err.message);
+      log("Got error %s, retrying", err.message);
       return retry(func, max, count + 1);
     }
     throw err;
@@ -55,7 +59,7 @@ function retry(func, max = 5, count = 0) {
 }
 
 function createDB() {
-  console.log("Creating database...");
+  log("Creating database...");
   return db.schema
     .raw(`EXEC sp_configure 'contained database authentication', 1`)
     .raw(`RECONFIGURE WITH OVERRIDE`)
@@ -64,7 +68,7 @@ function createDB() {
 }
 
 function createUser() {
-  console.log("Creating application user...");
+  log("Creating application user...");
   return db.schema
     .raw(`USE ${id(dbConfig.database)}`)
     .raw(`CREATE USER ${id(newUserName)} WITH PASSWORD = '${newUserPass}'`)
@@ -74,12 +78,12 @@ function createUser() {
 checkDBConnection()
   .then(() => doSetup())
   .then(() => {
-    console.log("Setup completed", {
+    log("Setup completed", {
       user: newUserName, database: dbConfig.database
     });
   })
   .catch((err) => {
-    console.error("Unexpected error", err.message, "\n\n");
+    log("Unexpected error", err.message, "\n\n");
     failed = true;
   })
   .then(() => db.destroy())
