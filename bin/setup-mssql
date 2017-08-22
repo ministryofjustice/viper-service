@@ -34,6 +34,7 @@ const checkDBConnection = () => {
       return sleep(CHECK_WAIT_TIMEOUT).then(repeatedBit);
     });
 
+  console.log("Connecting to database...");
   return repeatedBit();
 };
 
@@ -54,6 +55,7 @@ function retry(func, max = 5, count = 0) {
 }
 
 function createDB() {
+  console.log("Creating database...");
   return db.schema
     .raw(`EXEC sp_configure 'contained database authentication', 1`)
     .raw(`RECONFIGURE WITH OVERRIDE`)
@@ -62,6 +64,7 @@ function createDB() {
 }
 
 function createUser() {
+  console.log("Creating application user...");
   return db.schema
     .raw(`USE ${id(dbConfig.database)}`)
     .raw(`CREATE USER ${id(newUserName)} WITH PASSWORD = '${newUserPass}'`)

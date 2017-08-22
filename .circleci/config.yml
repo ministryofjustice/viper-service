@@ -4,7 +4,7 @@ jobs:
   build:
     docker:
       - image: circleci/node:6
-      - image: microsoft/mssql-server-linux:ctp2-1
+      - image: microsoft/mssql-server-linux:rc2
         environment:
           ACCEPT_EULA: Y
           SA_PASSWORD: aRubbishPasswordForC1Only
