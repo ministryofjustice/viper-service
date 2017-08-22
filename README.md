@@ -1,6 +1,8 @@
 # VIPER Rating Service
 A Restful service to provide access to the VIPER Rating for a known ID
 
+[![CircleCI](https://circleci.com/gh/noms-digital-studio/viper-service/tree/master.svg?style=svg)](https://circleci.com/gh/noms-digital-studio/viper-service/tree/master)
+
 ## Swagger documentation
 The details of the API  can found in [the online documentation](https://noms-digital-studio.github.io/viper-service/).
 
