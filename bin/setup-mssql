@@ -16,7 +16,7 @@ function log(msg, ...args) {
 }
 
 const CHECK_WAIT_TIMEOUT = 5 * 1000;
-const CHECK_MAX_TIME = 30 * 1000;
+const CHECK_MAX_TIME = 60 * 1000;
 
 const newUserName = getenv('APP_USER');
 const newUserPass = getenv('APP_PASSWORD');
