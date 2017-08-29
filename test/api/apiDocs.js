@@ -1,5 +1,5 @@
 const request = require('supertest');
-const should = require('chai').should();
+require('chai').should();
 
 const app = require('../../server/app');
 
@@ -28,6 +28,10 @@ describe('api /api-docs', () => {
         .expect('Content-Type', /json/)
         .expect(200)
         .then((res) => {
+          res.body.should.have.property('host')
+            .which.eqls(res.req.getHeader('host'));
+          res.body.should.have.property('schemes')
+            .which.eqls(['http']);
 
           return new Promise((resolve, reject) => {
             require('swagger-tools').specs.v2_0.validate(res.body, (err, results) => {

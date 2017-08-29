@@ -9,7 +9,11 @@ const swaggerUi = require('swagger-ui-express');
 module.exports = () => {
   const router = express.Router();
   router.get('/api-docs', (req, res) => {
-    return res.json(swaggerObject);
+    const serverInfo = {
+      host: req.headers['host'],
+      schemes: [req.protocol]
+    };
+    return res.json(Object.assign(serverInfo, swaggerObject));
   });
   router.get('/', swaggerUi.setup(swaggerObject));
   router.use('/', swaggerUi.serve);
