@@ -74,7 +74,7 @@ function watchJob(kudu, jobUrl) {
   const jobInfoP = kudu({method: 'GET', baseUrl: null, url: jobUrl});
   return jobInfoP
     .then((jobInfo) => {
-      if (jobInfo.status === "Running") {
+      if (jobInfo.status === "Running" || jobInfo.status === "Initializing") {
         log.info("job still running, checking again in 5 seconds");
         return wait(5).then(() => watchJob(kudu, jobUrl));
       }
