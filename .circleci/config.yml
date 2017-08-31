@@ -4,10 +4,6 @@ jobs:
   build:
     docker:
       - image: circleci/node:6
-      - image: microsoft/mssql-server-linux:rc2
-        environment:
-          ACCEPT_EULA: Y
-          SA_PASSWORD: aRubbishPasswordForC1Only
     working_directory: /home/circleci/app
     branches:
       ignore:
@@ -36,31 +32,28 @@ jobs:
       - run:
           name: Initialise SQL Server
           command: |
-            npm run setup-mssql
+            export DB_URI=$CI_DB_ADMIN_URI
             npm run migrate
-          environment:
-            DB_URI: mssql://sa:aRubbishPasswordForC1Only@localhost:1433/viper
-            APP_USER: app
-            APP_PASSWORD: aRubbishPasswordForC1Only
+            npm run seed
       - run:
           name: Run Unit Tests
-          command: npm run test-report
+          command: |
+            export DB_URI=$CI_DB_URI
+            npm run test-report
           environment:
             MOCHA_FILE: build/junit/test-results.xml
-            DB_URI: mssql://app:aRubbishPasswordForC1Only@localhost:1433/viper
       - store_test_results:
           path: build
       - run:
           name: Seed database
-          command: npm run seed
-          environment:
-            DB_URI: mssql://sa:aRubbishPasswordForC1Only@localhost:1433/viper
+          command: |
+            export DB_URI=$CI_DB_URI
+            npm run seed
       - run:
           name: Dredd Tests
-          command:
+          command: |
+            export DB_URI=$CI_DB_URI
             npm run docs-test
-          environment:
-            DB_URI: mssql://app:aRubbishPasswordForC1Only@localhost:1433/viper
       - deploy:
           name: Build Derived Git Commit
           command: |
