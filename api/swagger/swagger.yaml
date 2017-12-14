@@ -47,7 +47,7 @@
           type: "string"
           pattern: "^[A-Za-z]\\d{4}[A-Za-z]{2}$"
           description: "A known NOMS ID"
-          x-example: "I9876RA"
+          x-example: "A1421AE"
       get:
         summary: "Retrieve VIPER Rating"
         description: "Retrieves a single VIPER Rating from the dataset  Pre-seeded values for smoke testing: `B8888BB`, `I1111II`, `O0000OO`"
@@ -56,7 +56,7 @@
             description: "Success"
             examples:
               application/json:
-                nomsId: "I9876RA"
+                nomsId: "A1421AE"
                 viperRating: 0.92
             schema:
               "$ref": "#/definitions/viperRatingResult"
@@ -86,7 +86,7 @@
           type: "string"
           description: "A valid NOMS ID"
           pattern: "[A-Z]\\d{4}[A-Z]{2}"
-          example: "I9876RA"
+          example: "A1414AE"
         viperRating:
           type: "number"
           description: "A percentile VIPER Rating"
