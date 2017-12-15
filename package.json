@@ -30,11 +30,11 @@
     "prepare": "npm run snyk-protect"
   },
   "dependencies": {
-    "applicationinsights": "^0.21.0",
+    "applicationinsights": "^1.0.1",
     "azure-storage": "^2.3.0",
     "basic-auth": "^1.1.0",
     "body-parser": "^1.17.2",
-    "bunyan": "1.8.10",
+    "bunyan": "^1.8.12",
     "bunyan-middleware": "^0.8.0",
     "express": "^4.15.3",
     "helmet": "^3.6.1",
@@ -45,9 +45,9 @@
     "request": "^2.81.0",
     "request-promise": "^4.2.1",
     "sleep-promise": "^2.0.0",
-    "swagger-ui-express": "^2.0.1",
-    "tedious": "2.0.0",
-    "snyk": "^1.41.1"
+    "snyk": "^1.41.1",
+    "swagger-ui-express": "^2.0.13",
+    "tedious": "^2.1.5"
   },
   "devDependencies": {
     "chai": "^4.0.2",
@@ -55,10 +55,9 @@
     "dredd": "^4.1.1",
     "knex-migrate": "^1.3.0",
     "mocha": "^3.4.2",
-    "mocha-junit-reporter": "1.13.0",
+    "mocha-junit-reporter": "^1.15.0",
     "mock-knex": "^0.3.9",
-    "sinon": "^2.3.7",
-    "spectacle-docs": "0.8.2",
+    "spectacle-docs": "^0.9.13",
     "supertest": "3.0.0",
     "swagger-tools": "^0.10.1"
   },
