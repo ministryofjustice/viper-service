@@ -54,11 +54,58 @@ jobs:
             export DB_URI=$CI_DB_URI
             npm run seed
 
+      - persist_to_workspace:
+          root: .
+          paths:
+            - node_modules
+            - build-info.json
+
+  coverage:
+    <<: *defaults
+    steps:
+      - checkout
+
+      - attach_workspace:
+          at: /home/circleci/app/
+
+      - run:
+          name: Run Coverage Tests
+          command: |
+            export DB_URI=$CI_DB_URI
+            npm run test-coverage
+          environment:
+            LCOV_FILE: coverage/lcov.info
+
+      - store_test_results:
+          path: coverage/lcov-report
+
+  documentation:
+    <<: *defaults
+    steps:
+      - checkout
+
+      - attach_workspace:
+          at: /home/circleci/app/
+
+      - run:
+          name: Seed database
+          command: |
+            export DB_URI=$CI_DB_URI
+            npm run seed
+
       - run:
           name: Dredd Tests
           command: |
             export DB_URI=$CI_DB_URI
             npm run docs-test
+
+  deploy:
+    <<: *defaults
+    steps:
+      - checkout
+
+      - attach_workspace:
+          at: /home/circleci/app/
 
       - deploy:
           name: Build Derived Git Commit
@@ -98,3 +145,13 @@ workflows:
               ignore: /deploy-to.*/
             tags:
               ignore: /.*/
+      - coverage:
+          requires:
+            - build
+      - documentation:
+          requires:
+            - build
+      - deploy:
+          requires:
+            - build
+            - documentation

@@ -13,7 +13,8 @@
   "scripts": {
     "start": "node server.js | bunyan -o short",
     "test": "./node_modules/.bin/mocha --exit",
-    "test-report": "./node_modules/.bin/mocha --exit --reporter mocha-junit-reporter",
+    "test-report": "mocha --exit --reporter mocha-junit-reporter",
+    "test-coverage": "nyc --silent=true --reporter=lcovonly --reporter=text-lcov npm test && cat ./coverage/lcov.info | codacy-coverage",
     "verify": "swagger project verify",
     "docs-test": "dredd ./api/swagger/swagger.yaml http://127.0.0.1:3000",
     "docs-render": "spectacle -t ./docs ./api/swagger/swagger.yaml",
