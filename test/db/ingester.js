@@ -19,6 +19,8 @@ context('with a database', () => {
   });
 
   it('Should automatically provide timestamps in the staging table', function (done) {
+    this.timeout(5000);
+
     const now = new Date();
 
     stagingSeed(knex)
