@@ -108,4 +108,3 @@ context('with a database', () => {
       });
   });
 });
-

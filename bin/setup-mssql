@@ -18,8 +18,8 @@ function log(msg, ...args) {
 const CHECK_WAIT_TIMEOUT = 5 * 1000;
 const CHECK_MAX_TIME = 2 * 60 * 1000;
 
-const newUserName = getenv('APP_USER');
-const newUserPass = getenv('APP_PASSWORD');
+const newUserName = getenv('DB_USER');
+const newUserPass = getenv('DB_PASSWORD');
 if (!dbConfig) throw new Error(`Missing DB_URI environment variable`);
 
 const db = createDBConnection({database: "master"});

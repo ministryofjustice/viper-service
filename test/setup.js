@@ -20,4 +20,4 @@ global.createRealDB = function getUnmockedDB() {
     mockKnex.unmock(db);
   }
   return db;
-}
+};
