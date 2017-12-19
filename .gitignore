@@ -17,5 +17,7 @@ npm-debug.log
 
 *.iml
 .env
-build/
+build
+.nyc_output
+coverage
 test-results.xml

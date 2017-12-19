@@ -1,13 +1,12 @@
-version: 2
+defaults: &defaults
+  working_directory: /home/circleci/app
+  docker:
+    - image: node:carbon
 
+version: 2
 jobs:
   build:
-    docker:
-      - image: node:carbon
-    working_directory: /home/circleci/app
-    branches:
-      ignore:
-        - /deploy-to.*/
+    <<: *defaults
     steps:
       - run:
           name: Generate Build version
@@ -88,3 +87,14 @@ jobs:
 
               git push --force origin HEAD:deploy-to-dev
             fi
+
+workflows:
+  version: 2
+  test-and-deploy:
+    jobs:
+      - build:
+          filters:
+            branches:
+              ignore: /deploy-to.*/
+            tags:
+              ignore: /.*/

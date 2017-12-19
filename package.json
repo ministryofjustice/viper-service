@@ -12,8 +12,8 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js | bunyan -o short",
-    "test": "mocha --exit",
-    "test-report": "mocha --reporter mocha-junit-reporter --exit",
+    "test": "./node_modules/.bin/mocha --exit",
+    "test-report": "./node_modules/.bin/mocha --exit --reporter mocha-junit-reporter",
     "verify": "swagger project verify",
     "docs-test": "dredd ./api/swagger/swagger.yaml http://127.0.0.1:3000",
     "docs-render": "spectacle -t ./docs ./api/swagger/swagger.yaml",
@@ -58,6 +58,7 @@
     "knex-migrate": "^1.3.1",
     "mocha": "^4.0.0",
     "mocha-junit-reporter": "^1.15.0",
+    "mocha-lcov-reporter": "^1.3.0",
     "mock-knex": "^0.4.0",
     "snyk": "^1.59.1",
     "spectacle-docs": "^0.9.13",
