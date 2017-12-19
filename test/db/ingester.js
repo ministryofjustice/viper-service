@@ -13,35 +13,36 @@ function absoluteDifferenceInSecondsOf (date1, date2) {
 context('with a database', () => {
   let knex;
   before(function () {
-    if (!process.env.DB_URI && !process.env.CI) {
-      this.skip();
-    } else {
+    if (process.env.DB_URI || process.env.CI) {
       knex = createRealDB();
     }
   });
 
-  it('Should automatically provide timestamps in the staging table', () => {
+  it('Should automatically provide timestamps in the staging table', function (done) {
     const now = new Date();
-    return stagingSeed(knex).then(() => knex.select('uploaded').from('staging').then((rows) => {
+
+    stagingSeed(knex)
+      .then(() => knex.select('uploaded').from('staging'))
+      .then((rows) => {
         expect(rows).to.have.lengthOf(6);
+
         rows.forEach((row) => {
           expect(row.uploaded).to.be.a('date');
           expect(absoluteDifferenceInSecondsOf(row.uploaded, now)).to.be.lessThan(5);
         });
       })
-    );
+      .then(() => done(), (err) => done(err));
   });
 
-  it('should migrate data from staging into scores as inserts', () => {
+  it('should migrate data from staging into scores as inserts', function (done) {
     const now = new Date();
 
-    return Promise.all([
-      knex('scores').delete(),
-      stagingSeed(knex)
-    ])
+    knex('scores').delete()
+      .then(() => stagingSeed(knex))
       .then(() => ingester.ingest(knex))
       .then((stats) => {
         expect(stats).to.have.lengthOf(6);
+
         stats.forEach((row) => {
           expect(row.new_since).to.be.a('date');
           expect(row.operation).to.be.eq('INSERT');
@@ -51,44 +52,42 @@ context('with a database', () => {
       .then(() => knex('scores').count('nomis_id as n').first())
       .then((count) => {
         expect(count.n).to.equal(6);
-      });
+      })
+      .then(() => done(), (err) => done(err));
   });
 
-  it('should migrate data from staging into existing scores as updates', () => {
+  it('should migrate data from staging into existing scores as updates', function (done) {
     const now = new Date();
 
-    return Promise.all([
-      knex('scores').delete(),
-      stagingSeed(knex), // 6 in staging
-      scoresSeed(knex)   // 3 in scores
-    ])
+    knex('scores').delete()
+      .then(() => stagingSeed(knex)) // 6 in staging
+      .then(() => scoresSeed(knex))   // 3 in scores
       .then(() => ingester.ingest(knex))
       .then((stats) => {
         expect(stats).to.have.lengthOf(6);
+
         stats.forEach((row) => {
           expect(row.new_since).to.be.a('date');
           expect(differenceInSeconds(row.new_since, now)).to.be.lessThan(5);
         });
-        const filtered = stats.filter((row) => row.operation === 'UPDATE');
 
+        const filtered = stats.filter((row) => row.operation === 'UPDATE');
         expect(filtered).to.have.lengthOf(3);
       })
       .then(() => knex('scores').count('nomis_id as n').first())
       .then((count) => {
         expect(count.n).to.equal(6);
-      });
+      })
+      .then(() => done(), (err) => done(err));
   });
 
-  it('should migrate only the latest data from staging', () => {
-
+  it('should migrate only the latest data from staging', function (done) {
     let now = new Date();
     let later = new Date(now);
     later.setMinutes(now.getMinutes() + 1);
 
-    return Promise.all([
-      knex('staging').delete(),
-      knex('scores').delete()
-    ])
+    knex('staging').delete()
+      .then(() => knex('scores').delete())
       .then(() =>
         knex('staging').insert([
           {nomis_id: 'B1234AA', score: 0.01, uploaded: now}
@@ -102,9 +101,12 @@ context('with a database', () => {
       .then(() => ingester.ingest(knex))
       .then((stats) => {
         expect(stats).to.have.lengthOf(1);
+
         stats.forEach((row) => {
           expect(row.new_score).to.be.equal(0.99);
         });
-      });
+      })
+      .then(() => done(), (err) => done(err));
   });
+
 });
