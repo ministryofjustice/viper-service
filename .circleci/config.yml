@@ -11,30 +11,33 @@ jobs:
     steps:
       - run:
           name: Generate Build version
-          command: |
-            echo "export BUILD_VERSION=$(date +%Y%m%d%H%M)-$CIRCLE_BUILD_NUM" >> $BASH_ENV
+          command: echo "export BUILD_VERSION=$(date +%Y%m%d%H%M)-$CIRCLE_BUILD_NUM" >> $BASH_ENV
+
       - checkout
-      - restore_cache:
-          key: node_modules-{{ checksum "package.json" }}
-          key: node_modules
+
       - run:
           name: Install Dependencies
-          command: |
-            npm prune
-            npm install
-      - save_cache:
-          key: node_modules-{{ checksum "package.json" }}
-          paths:
-            - ./node_modules
+          command: npm install
+
       - run:
           name: Check for security advisories
           command: npm run snyk
+
+      - run:
+          name: Record build info
+          command: |
+            if [ "${CIRCLE_BRANCH}" == "master" ]; then
+              GIT_REF=$CIRCLE_SHA1 BUILD_NUMBER=$CIRCLE_BUILD_NUM \
+              npm run record-build-info
+            fi
+
       - run:
           name: Initialise SQL Server
           command: |
             export DB_URI=$CI_DB_ADMIN_URI
             npm run migrate
             npm run seed
+
       - run:
           name: Run Unit Tests
           command: |
@@ -42,39 +45,46 @@ jobs:
             npm run test-report
           environment:
             MOCHA_FILE: build/junit/test-results.xml
+
       - store_test_results:
           path: build
+
       - run:
           name: Seed database
           command: |
             export DB_URI=$CI_DB_URI
             npm run seed
+
       - run:
           name: Dredd Tests
           command: |
             export DB_URI=$CI_DB_URI
             npm run docs-test
+
       - deploy:
           name: Build Derived Git Commit
           command: |
             if [ "${CIRCLE_BRANCH}" == "master" ]; then
-              GIT_REF=$CIRCLE_SHA1 BUILD_NUMBER=$CIRCLE_BUILD_NUM \
-                npm run record-build-info
-              git add --force --verbose build-info.json
               git config user.name "Circle CI"
               git config user.email "circle@circleci.com"
+
+              git add --force --verbose build-info.json
+
               git commit \
                 -m "Deployment of build $CIRCLE_BUILD_NUM" \
                 -m "$(git log --format=%B -n 1 $CIRCLE_SHA1)" \
                 -m "From gitref $CIRCLE_SHA1"
             fi
+
       - deploy:
           name: Deploy to Dev environment
           command: |
             if [ "${CIRCLE_BRANCH}" == "master" ]; then
               export DB_URI=$DEV_DB_URI
+
               npm run knex -- migrate:currentVersion
               npm run migrate
               npm run seed
+
               git push --force origin HEAD:deploy-to-dev
             fi
